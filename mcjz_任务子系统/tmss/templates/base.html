@@ -100,7 +100,8 @@
                     <div class="d-sm-none d-lg-inline-block">Hi, <b>{{ username }}</b></div>
                 </a>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a href="{% url 'pim' %}" class="dropdown-item has-icon">
+                        <a href="javascript:;" class="dropdown-item has-icon" data-target="#changeInfoSeeUserInfo"
+                           data-toggle="modal">
                             <i class="ion ion-android-person"></i> 个人信息
                         </a>
                         <a href="{% url 'logout' %}" class="dropdown-item has-icon">
@@ -131,9 +132,6 @@
                     <li class="menu-header">Dashboard</li>
                     <li class="active">
                         <a href="{% url 'index' %}"><i class="ion ion-speedometer"></i><span>任务概览</span></a>
-                    </li>
-                    <li>
-                        <a href="{% url 'analysis' %}"><i class="ion ion-card"></i>统计分析<span></span></a>
                     </li>
                     <li class="menu-header">Components</li>
                     <li>
@@ -178,12 +176,17 @@
                             </li>
                             <li><a href="{% url 'overtime_task' %}"><i class="ion ion-ios-circle-outline"></i>超时任务</a>
                             </li>
+                            <li><a href="{% url 'advance_task' %}"><i class="ion ion-ios-circle-outline"></i>提前完成任务</a>
+                            </li>
                         </ul>
                     </li>
                     <li>
-                        <a href="#" class="has-dropdown"><i class="ion ion-person"></i><span>个人中心</span></a>
+                        <a href="" class="has-dropdown"><i class="ion ion-ios-albums-outline"></i>统计分析<span></span></a>
                         <ul class="menu-dropdown">
-                            <li><a href="{% url 'pim' %}"><i class="ion ion-ios-circle-outline"></i>个人信息</a></li>
+                            <li><a href="{% url 'analysis' %}"><i class="ion ion-ios-circle-outline"></i> 个人统计</a>
+                            </li>
+                            <li><a href="{% url 'analysis2' %}"><i class="ion ion-ios-circle-outline"></i>综合统计</a>
+                            </li>
                         </ul>
                     </li>
                 </ul>
@@ -200,6 +203,77 @@
             </div>
             <div class="footer-right"></div>
         </footer>
+    </div>
+</div>
+<!--个人信息以及修改  模态框-->
+<div class="modal fade" id="changeInfoSeeUserInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <form action="" method="post">
+            <div class="modal-content" style="margin-top: 300px">
+                <h4 style="padding-top: 15px;padding-left: 15px">修改密码</h4>
+                <div class="modal-body">
+                    <table class="table" style="margin-bottom:0px;" id="changepwd">
+                        <tbody>
+                        <tr>
+                            <td wdith="20%">用户名:</td>
+                            <td width="80%">
+                                <input type="text" class="form-control"
+                                       maxlength="18" readonly="readonly" value="{{ username }}" id="username"
+                                       autocomplete="off"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td wdith="20%">电话号码:</td>
+                            <td width="80%">
+                                <input type="text" class="form-control"
+                                       maxlength="18" readonly="readonly" value="{{ telephone }}" id="telephone"
+                                       autocomplete="off"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td wdith="20%">所属部门:</td>
+                            <td width="80%">
+                                <input type="text" class="form-control"
+                                       maxlength="18" readonly="readonly" value="{{ department }}" id="department"
+                                       autocomplete="off"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td wdith="20%">旧密码:</td>
+                            <td width="80%"><input type="password" class="form-control"
+                                                   id="old_password"
+                                                   maxlength="18" autocomplete="off"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td wdith="20%">新密码:</td>
+                            <td width="80%"><input type="password" class="form-control" maxlength="18"
+                                                   id="password"
+                                                   autocomplete="off"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td wdith="20%">确认密码:</td>
+                            <td width="80%"><input type="password" class="form-control"
+                                                   id="new_password"
+                                                   maxlength="18" autocomplete="off"/>
+                                <span style="color: red;margin-top: 10px;display: block;" id="tishi"></span>
+                            </td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr></tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-target="#changeInfoSeeUserInfo"
+                            data-toggle="modal" class="cancel">取消
+                    </button>
+                    <button class="btn btn-primary" id="changeUserInfo">提交</button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -302,15 +376,35 @@
         var href = orig + loca;
         console.log(href);
         if (loca == "/index/") {
-            window.location.href=href;
-            location.reload();
+            window.location.href = href;
+            window.location.replace(orig + "/index/");
         } else {
             $.get(href, {}, function (result) {
                 $(".main-content").eq(0).html(result);
             });
         }
         return false;
-    })
+    });
+    $("#changeUserInfo").click(function () {
+        var old_pwd = $("#old_password").val();
+        var pwd = $("#password").val();
+        var new_pwd = $("#new_password").val();
+        $.post(orig + "/profile/", {old_password: old_pwd, password: pwd, new_password: new_pwd}, function (result) {
+            if (result.msg == "修改成功。") {
+                alert("修改成功!");
+                window.location.replace(orig + "/index/");
+            } else if (result.msg == "新密码不能小于4位。") {
+                alert("新密码不能小于4位!");
+            } else if (result.msg == "设置的两次新密码不一致。") {
+                alert("设置的两次新密码不一致!");
+            } else if (result.msg == "密码错误。") {
+                alert("密码错误！");
+            } else if (result.msg == "内容不能为空。") {
+                alert("内容不能为空！");
+            }
+        });
+        return false;
+    });
 </script>
 </body>
 </html>

@@ -11,13 +11,13 @@
             <td>计划完成时间</td>
             <td>备注</td>
             <td>实际完成时间</td>
-            <td>逾期天数</td>
+            <td>提前天数</td>
         </tr>
         {% if not tasks %}
             <tr><td colspan="11">暂无内容</td></tr>
         {% endif %}
             {% for task in tasks %}
-                {% if task.yuqi > 0 %}
+                {% if task.yuqi <= 0 %}
                 <tr>
                     <td style="width: 4%">{{ task.id }}</td>
                     {#编号#}
@@ -39,7 +39,7 @@
                     {#备注#}
                     <td style="width: 7%">{{ task.virtual_end_time }}</td>
                     {# 实际完成时间#}
-                    <td style="width: 5%">{{ task.yuqi }}</td>
+                    <td style="width: 5%" class="advance">{{ task.yuqi }}</td>
                     {#逾期天数#}
                 </tr>
                 {% endif %}
@@ -47,3 +47,10 @@
 
     </table>
 
+<script>
+
+    var len = $(".advance").length;
+    for(var i=0;i<len;i++){
+        $(".advance").eq(i).html(Math.abs($(".advance").eq(i).html()))
+    }
+</script>

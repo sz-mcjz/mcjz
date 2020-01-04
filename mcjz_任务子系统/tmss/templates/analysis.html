@@ -1,343 +1,59 @@
-{% extends 'base.html' %}
-{% block main_content %}
-    <div class="row">
-        <div class="col-lg-12 col-md-12 col-12">
-            <div>
-                <span style="font-size: 1.5em"><b>个人统计</b></span>
-                <div style="margin-top: -10px">
-                    <hr>
-                </div>
-                <div class="main" style="width: 300px;height:200px;float: left"></div>
-                <div class="main" style="width: 300px;height:200px;float: left"></div>
-                <div class="main" style="width: 300px;height:200px;float: left"></div>
-                <div class="main" style="width: 300px;height:200px;float: left"></div>
-                <div class="main" style="width: 300px;height:200px;float: left"></div>
-                <div class="main" style="width: 300px;height:200px;float: left"></div>
-                <div class="main" style="width: 300px;height:200px;float: left"></div>
-                <div class="main" style="width: 300px;height:200px;float: left"></div>
-                <div class="main" style="width: 300px;height:200px;float: left"></div>
-                <div class="main" style="width: 300px;height:200px;float: left"></div>
-                <div style="clear: both"></div>
-                <span style="font-size: 1.5em;clear: both"><b>系统统计</b></span>
-                <div style="margin-top: -10px">
-                    <hr>
-                </div>
-                <div>
-                    <div id="chartContainer1" style="height: 830px; width: 25%;float: left;"></div>
-                    <div id="chartContainer2" style="height: 830px; width: 25%;float: left;"></div>
-                    <div id="chartContainer3" style="height: 830px; width: 25%;float: left;"></div>
-                    <div id="chartContainer4" style="height: 830px; width: 25%;float: left;"></div>
-                </div>
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-12">
+        <div>
+            <span style="font-size: 1.5em"><b>个人统计</b></span>
+            <div style="margin-top: -10px">
+                <hr>
             </div>
+            <div>
+                {% if users %}
+                    {% for user in users %}
+                        <div class="main{{ user.id }}" style="width: 20%;height:250px;float: left"></div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div style="clear: both"></div>
+
+
         </div>
         <script type="text/javascript">
-            // 基于准备好的dom，初始化echarts实例
-            var tus = document.getElementsByClassName('main');
-            for (var i = 0; i < 10; i++) {
-                var myChart = echarts.init(tus[i]);
+            {% if users %}
+                {% for user in users %}
 
-                // 指定图表的配置项和数据
-                var option = {
-                    title: {
-                        text: '石龙进'
-                    },
-                    tooltip: {},
-                    legend: {
-                        data: ['']
-                    },
-                    xAxis: {
-                        data: ["全部", "已完成", "未完成", "今日", "超时"]
-                    },
-                    yAxis: {},
-                    series: [{
-                        name: '数量',
-                        type: 'bar',
-                        data: [20, 4, 16, 4, 12]
-                    }]
-                };
+                    // 基于准备好的dom，初始化echarts实例
+                    var tus = document.getElementsByClassName('main{{ user.id }}');
+                    var myChart = echarts.init(tus[0]);
+                    // 指定图表的配置项和数据
+                    var option = {
+                        title: {
+                            text: '{{ user.username }}'
+                        },
+                        tooltip: {},
+                        legend: {
+                            data: ['办的', '发的']
+                        },
+                        xAxis: {
+                            data: ["全部", "已完成", "未完成", "今日", "超时"]
+                        },
+                        yAxis: {},
+                        series: [
+                            {
+                                name: '办的',
+                                type: 'bar',
+                                data: [20, 4, 16, 4, 12]
+                            },
+                            {
+                                name: '发的',
+                                type: 'bar',
+                                data: [20, 4, 16, 4, 12]
+                            }
+                        ]
+                    };
+                    myChart.setOption(option);
 
-                // 使用刚指定的配置项和数据显示图表。
-                myChart.setOption(option);
-            }
+                {% endfor %}
+            {% endif %}
 
         </script>
-        <script>
-            window.onload = function () {
-                var chart1 = new CanvasJS.Chart("chartContainer1", {
-                    animationEnabled: true,
-
-                    title: {
-                        text: "待办务量"
-                    },
-                    axisX: {
-                        interval: 1
-                    },
-                    axisY2: {
-                        interlacedColor: "rgba(1,77,101,.2)",
-                        gridColor: "rgba(1,77,101,.1)",
-                        title: ""
-                    },
-                    data: [{
-                        type: "bar",
-                        name: "companies",
-                        axisYType: "secondary",
-                        color: "#014D65",
-                        dataPoints: [
-
-                            {y: 3, label: "石龙进"},
-                            {y: 7, label: "阳瑞"},
-                            {y: 5, label: "罗祯杰"},
-                            {y: 9, label: "彭宇"},
-                            {y: 10, label: "陈雪来"},
-                            {y: 12, label: "陈林"},
-                            {y: 3, label: "傅坚"},
-                            {y: 8, label: "张坤"},
-                            {y: 4, label: "雷剑峰"},
-                            {y: 6, label: "孙盼"},
-                            {y: 5, label: "廖春华"},
-                            {y: 8, label: "杨丽丽"},
-                            {y: 8, label: "郑健喜"},
-                            {y: 1, label: "严璟"},
-                            {y: 15, label: "陈穆塔"},
-                            {y: 11, label: "代睿"},
-                            {y: 12, label: "张艳利"},
-                            {y: 16, label: "彭存"},
-                            {y: 10, label: "陈燕芬"},
-                            {y: 2, label: "陈志鹏"},
-                            {y: 15, label: "钟宇航"},
-                            {y: 10, label: "崔智杰"},
-                            {y: 10, label: "麦适"},
-                            {y: 18, label: "唐俊"},
-                            {y: 3, label: "小宇"},
-                            {y: 7, label: "彭震"},
-                            {y: 6, label: "林业丽"},
-                            {y: 6, label: "施少年"},
-                            {y: 8, label: "梁金强"},
-                            {y: 8, label: "周润"},
-                            {y: 10, label: "徐圣文"},
-                            {y: 12, label: "徐杰"},
-                            {y: 19, label: "李四生"},
-                            {y: 10, label: "刘礼菲"},
-                            {y: 8, label: "杨涛"},
-                            {y: 6, label: "张荟娟"},
-                            {y: 1, label: "吴锡钦"},
-                            {y: 2, label: "董道顺"},
-                            {y: 6, label: "刘光平"},
-                            {y: 8, label: "闫宇"},
-                            {y: 10, label: "副总"},
-                            {y: 4, label: "总经理"},
-
-                        ]
-                    }]
-                });
-                chart1.render();
-
-                var chart2 = new CanvasJS.Chart("chartContainer2", {
-                    animationEnabled: true,
-
-                    title: {
-                        text: "发布任务"
-                    },
-                    axisX: {
-                        interval: 1
-                    },
-                    axisY2: {
-                        interlacedColor: "rgba(1,77,101,.2)",
-                        gridColor: "rgba(1,77,101,.1)",
-                        title: ""
-                    },
-                    data: [{
-                        type: "bar",
-                        name: "companies",
-                        axisYType: "secondary",
-                        color: "#014D65",
-                        dataPoints: [
-
-                            {y: 3, label: "石龙进"},
-                            {y: 7, label: "阳瑞"},
-                            {y: 5, label: "罗祯杰"},
-                            {y: 6, label: "彭宇"},
-                            {y: 1, label: "陈雪来"},
-                            {y: 7, label: "陈林"},
-                            {y: 3, label: "傅坚"},
-                            {y: 2, label: "张坤"},
-                            {y: 2, label: "雷剑峰"},
-                            {y: 4, label: "孙盼"},
-                            {y: 3, label: "廖春华"},
-                            {y: 1, label: "杨丽丽"},
-                            {y: 4, label: "郑健喜"},
-                            {y: 3, label: "严璟"},
-                            {y: 16, label: "陈穆塔"},
-                            {y: 8, label: "代睿"},
-                            {y: 3, label: "张艳利"},
-                            {y: 7, label: "彭存"},
-                            {y: 5, label: "陈燕芬"},
-                            {y: 9, label: "陈志鹏"},
-                            {y: 7, label: "钟宇航"},
-                            {y: 12, label: "崔智杰"},
-                            {y: 9, label: "麦适"},
-                            {y: 8, label: "唐俊"},
-                            {y: 3, label: "小宇"},
-                            {y: 7, label: "彭震"},
-                            {y: 5, label: "林业丽"},
-                            {y: 3, label: "施少年"},
-                            {y: 7, label: "梁金强"},
-                            {y: 5, label: "周润"},
-                            {y: 2, label: "徐圣文"},
-                            {y: 12, label: "徐杰"},
-                            {y: 15, label: "李四生"},
-                            {y: 12, label: "刘礼菲"},
-                            {y: 6, label: "杨涛"},
-                            {y: 4, label: "张荟娟"},
-                            {y: 3, label: "吴锡钦"},
-                            {y: 5, label: "董道顺"},
-                            {y: 12, label: "刘光平"},
-                            {y: 8, label: "闫宇"},
-                            {y: 18, label: "副总"},
-                            {y: 25, label: "总经理"},
-
-                        ]
-                    }]
-                });
-                chart2.render();
-
-                var chart3 = new CanvasJS.Chart("chartContainer3", {
-                    animationEnabled: true,
-
-                    title: {
-                        text: "完成任务"
-                    },
-                    axisX: {
-                        interval: 1
-                    },
-                    axisY2: {
-                        interlacedColor: "rgba(1,77,101,.2)",
-                        gridColor: "rgba(1,77,101,.1)",
-                        title: ""
-                    },
-                    data: [{
-                        type: "bar",
-                        name: "companies",
-                        axisYType: "secondary",
-                        color: "#014D65",
-                        dataPoints: [
-                            {y: 34, label: "石龙进"},
-                            {y: 37, label: "阳瑞"},
-                            {y: 17, label: "罗祯杰"},
-                            {y: 23, label: "彭宇"},
-                            {y: 13, label: "陈雪来"},
-                            {y: 22, label: "陈林"},
-                            {y: 23, label: "傅坚"},
-                            {y: 35, label: "张坤"},
-                            {y: 12, label: "雷剑峰"},
-                            {y: 34, label: "孙盼"},
-                            {y: 12, label: "廖春华"},
-                            {y: 35, label: "杨丽丽"},
-                            {y: 12, label: "郑健喜"},
-                            {y: 34, label: "严璟"},
-                            {y: 41, label: "陈穆塔"},
-                            {y: 26, label: "代睿"},
-                            {y: 31, label: "张艳利"},
-                            {y: 12, label: "彭存"},
-                            {y: 35, label: "陈燕芬"},
-                            {y: 26, label: "陈志鹏"},
-                            {y: 31, label: "钟宇航"},
-                            {y: 12, label: "崔智杰"},
-                            {y: 34, label: "麦适"},
-                            {y: 12, label: "唐俊"},
-                            {y: 34, label: "小宇"},
-                            {y: 16, label: "彭震"},
-                            {y: 24, label: "林业丽"},
-                            {y: 21, label: "施少年"},
-                            {y: 31, label: "梁金强"},
-                            {y: 16, label: "周润"},
-                            {y: 23, label: "徐圣文"},
-                            {y: 21, label: "徐杰"},
-                            {y: 39, label: "李四生"},
-                            {y: 33, label: "刘礼菲"},
-                            {y: 8, label: "杨涛"},
-                            {y: 12, label: "张荟娟"},
-                            {y: 8, label: "吴锡钦"},
-                            {y: 16, label: "董道顺"},
-                            {y: 13, label: "刘光平"},
-                            {y: 14, label: "闫宇"},
-                            {y: 26, label: "副总"},
-                            {y: 29, label: "总经理"},
-
-                        ]
-                    }]
-                });
-                chart3.render();
-
-                var chart4 = new CanvasJS.Chart("chartContainer4", {
-                    animationEnabled: true,
-
-                    title: {
-                        text: "逾期任务"
-                    },
-                    axisX: {
-                        interval: 1
-                    },
-                    axisY2: {
-                        interlacedColor: "rgba(1,77,101,.2)",
-                        gridColor: "rgba(1,77,101,.1)",
-                        title: ""
-                    },
-                    data: [{
-                        type: "bar",
-                        name: "companies",
-                        axisYType: "secondary",
-                        color: "#014D65",
-                        dataPoints: [
-
-                            {y: 0, label: "石龙进"},
-                            {y: 1, label: "阳瑞"},
-                            {y: 2, label: "罗祯杰"},
-                            {y: 0, label: "彭宇"},
-                            {y: 3, label: "陈雪来"},
-                            {y: 4, label: "陈林"},
-                            {y: 2, label: "傅坚"},
-                            {y: 1, label: "张坤"},
-                            {y: 1, label: "雷剑峰"},
-                            {y: 3, label: "孙盼"},
-                            {y: 2, label: "廖春华"},
-                            {y: 1, label: "杨丽丽"},
-                            {y: 0, label: "郑健喜"},
-                            {y: 0, label: "严璟"},
-                            {y: 3, label: "陈穆塔"},
-                            {y: 2, label: "代睿"},
-                            {y: 0, label: "张艳利"},
-                            {y: 1, label: "彭存"},
-                            {y: 0, label: "陈燕芬"},
-                            {y: 0, label: "陈志鹏"},
-                            {y: 2, label: "钟宇航"},
-                            {y: 5, label: "崔智杰"},
-                            {y: 4, label: "麦适"},
-                            {y: 1, label: "唐俊"},
-                            {y: 0, label: "小宇"},
-                            {y: 0, label: "彭震"},
-                            {y: 2, label: "林业丽"},
-                            {y: 2, label: "施少年"},
-                            {y: 1, label: "梁金强"},
-                            {y: 3, label: "周润"},
-                            {y: 5, label: "徐圣文"},
-                            {y: 1, label: "徐杰"},
-                            {y: 9, label: "李四生"},
-                            {y: 4, label: "刘礼菲"},
-                            {y: 0, label: "杨涛"},
-                            {y: 3, label: "张荟娟"},
-                            {y: 4, label: "吴锡钦"},
-                            {y: 6, label: "董道顺"},
-                            {y: 1, label: "刘光平"},
-                            {y: 4, label: "闫宇"},
-                            {y: 0, label: "副总"},
-                            {y: 0, label: "总经理"},
-
-
-                        ]
-                    }]
-                });
-                chart4.render();
-            }
-        </script>
-{% endblock %}
+    </div>
+</div>

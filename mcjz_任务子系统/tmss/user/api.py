@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render_to_response, reverse, redirect
 
@@ -30,30 +31,28 @@ def logout(request):
 def index(request):
     if request.method == 'GET':
         uuid = request.COOKIES.get('uuid')
-        print(uuid)
         user = Staff.objects.get(telephone=uuid)
         staff = [user for user in Staff.objects.all()]
         staff.remove(Staff.objects.get(telephone=uuid))
-        completed_task = set(
-            [complete_task.task_name for complete_task in TaskCheck.objects.filter(task_recipient=user)])
-        release_completed_task = set(
-            [complete_task.task_name for complete_task in
-             TaskCheck.objects.filter(task_recipient__username=user, is_complete=1)])
-        my_all_tasks = set([task for task in Task.objects.filter(task_recipient=user.username)])
-        release_my_all_tasks = set([task for task in Task.objects.filter(task_originator=user.username)])
-        tasks = list(my_all_tasks - completed_task)
-        releases = list(release_my_all_tasks - release_completed_task)
-        print(release_completed_task)
-        print(release_my_all_tasks)
-        print(releases)
+        # 我的任务
+        completed_task = [complete_task.task_name_id for complete_task in
+                          TaskCheck.objects.filter(task_recipient=user, is_complete=1)]
+        my_all_tasks = [task for task in Task.objects.filter(~Q(id__in=completed_task), task_recipient=user.username)]
+        # 我的发布
+        release_my_all_tasks = [task for task in Task.objects.filter(task_originator=user.username)]
+        release_completed_task = [complete_task.task_name.id for complete_task in
+                                  TaskCheck.objects.filter(task_name__in=release_my_all_tasks, is_complete=1)]
+        release_my_all_tasks = [task for task in
+                                Task.objects.filter(~Q(id__in=release_completed_task), task_originator=user.username)]
         data = {
             'username': user.username,
             'icon': user.icon,
             'department': user.department.name,
+            'telephone': user.telephone,
             'levels': [level for level in TaskLevel.objects.all()],
             'users': staff,
-            'tasks': [task for task in Task.objects.filter(task_recipient=user.username)],
-            'releases': releases,
+            'tasks': my_all_tasks,
+            'releases': release_my_all_tasks,
             'to_examines': [examine for examine in
                             TaskModify.objects.filter(task_name__task_originator=user.username, is_agree=0)],
             'submit_examines': [examine for examine in
@@ -61,6 +60,7 @@ def index(request):
         }
         return render_to_response('index.html', context=data)
     if request.method == 'POST':
+        print('触发发布任务')
         uuid = request.COOKIES.get('uuid')
         user = Staff.objects.get(telephone=uuid)
         new_task = Task()
@@ -74,10 +74,13 @@ def index(request):
         new_task.save()
         staff = [user for user in Staff.objects.all()]
         staff.remove(Staff.objects.get(telephone=uuid))
+        print("--" * 50)
+        print(user.telephone)
         data = {
             'username': user.username,
             'icon': user.icon,
             'department': user.department.name,
+            'telephone': user.telephone,
             'levels': [level for level in TaskLevel.objects.all()],
             'users': staff,
             'tasks': [task for task in Task.objects.filter(task_recipient=user.username)],
@@ -123,4 +126,3 @@ def profile(request):
                 return JsonResponse(data={"msg": "密码错误。"}, json_dumps_params={'ensure_ascii': False})
         else:
             return JsonResponse(data={'msg': '内容不能为空。'}, json_dumps_params={'ensure_ascii': False})
-

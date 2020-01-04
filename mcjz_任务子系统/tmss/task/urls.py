@@ -9,6 +9,7 @@ urlpatterns = [
     path('incomplete/task', api.incomplete_task, name='incomplete_task'),
     path('current/task', api.current_task, name='current_task'),
     path('overtime/task', api.overtime_task, name='overtime_task'),
+    path('advance/task', api.advance_task, name='advance_task'),
     # 我的任务
     path('my/all/task/', api.my_all_task, name='my_all_task'),
     path('my/finish/task', api.my_finish_task, name='my_finish_task'),
@@ -36,4 +37,5 @@ urlpatterns = [
     path('my/examine/submit/task/', api.examine_submit_task, name='examine_submit_task'),
     # 统计分析
     path('analysis/', api.analysis, name='analysis'),
+    path('analysis2/', api.analysis2, name='analysis2'),
 ]

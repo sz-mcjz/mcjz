@@ -1,0 +1,75 @@
+<body style="height: 100%; margin: 0">
+<div class="container" style="height: 900px;width:16%;float: left"></div>
+<div class="container" style="height: 900px;width:16%;float: left"></div>
+<div class="container" style="height: 900px;width:16%;float: left"></div>
+<div class="container" style="height: 900px;width:16%;float: left"></div>
+<div class="container" style="height: 900px;width:16%;float: left"></div>
+<div class="container" style="height: 900px;width:16%;float: left"></div>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat/dist/ecStat.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/dataTool.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/china.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/world.js"></script>
+<script type="text/javascript"
+        src="https://api.map.baidu.com/api?v=2.0&ak=xfhhaTThl11qYVrqLZii6w8qE5ggnhrY&__ec_v__=20190126"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/bmap.min.js"></script>
+<script type="text/javascript">
+    //  发布的  完成的  待办的  我发布延期的  我办延期的  预期的
+    var lis = ['已发布','已完成','待办','发布预期','待办预期','预期'];
+    var dom = document.getElementsByClassName("container");
+    var nameList = ["石龙进", "阳瑞", "罗祯杰", "彭宇", "陈雪来", "陈林", "傅坚", "张坤", "雷剑峰", "孙盼", "廖春华", "杨丽丽", "郑健喜", "严璟", "陈穆塔", "代睿", "张艳利", "彭存", "陈燕芬", "陈志鹏", "钟宇航", "崔智杰", "麦适", "唐俊", "小宇", "彭震", "林业丽", "施少年", "梁金强", "周润", "徐圣文", "徐杰", "李四生", "刘礼菲", "杨涛", "张荟娟", "吴锡钦", "董道顺", "刘光平", "闫宇", "副总", "总经理"];
+    var contentList = [
+    [30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20],
+    [30*20, 40, 10, 20, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20],
+    [30*30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20],
+    [30*40, 40, 10, 20, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20],
+    [30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20],
+    [30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20, 10, 20, 30, 40, 10, 20]];
+    for(var i=0;i<dom.length;i++){
+        var myChart = echarts.init(dom[i]);
+        var app = {};
+        option = null;
+        option = {
+            title: {
+                text: lis[i],  //标题区域
+                subtext: ''
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            legend: {
+                data: ['', '']
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'value',
+                boundaryGap: [0, 0.01]
+            },
+            yAxis: {
+                type: 'category',
+                data: nameList,  // 名字列表区域
+            },
+            series: [
+                {
+                    name: '发的',
+                    type: 'bar',
+                    data: contentList[i], // 数据区域
+                }
+            ]
+        };
+
+        if (option && typeof option === "object") {
+            myChart.setOption(option, true);
+        }
+    }
+</script>
+</body>

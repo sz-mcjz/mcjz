@@ -1,41 +1,41 @@
 {% extends 'base.html' %}
 {% block main_content %}
     <div class="row">
-        <div class="col-lg-8 col-md-6 col-12">
+        <div style="width: 75%;">
             <div>
-                <span style="font-size: 1.5em"><b>我的任务</b></span>
+                <span style="font-size: 1.5em"><b>当日到期</b></span>
                 <div style="margin-top: -10px">
                     <hr>
                 </div>
                 <table class="table table-bordered">
                     <tr>
-                        <th style="width: 6%">任务发起人</th>
+                        <th style="width: 6%">待办责任人</th>
                         <th style="width: 5%">任务等级</th>
-                        <th style="width: 22%">任务内容</th>
+                        <th style="width: 20%">任务内容</th>
                         <th style="width: 5%">开始时间</th>
-                        <th style="width: 5%">计划完成时间</th>
-                        <th style="width: 10%">备注</th>
+                        <th style="width: 6%">计划完成时间</th>
+                        <th style="width: 10%">申请延期时间</th>
                         <th style="width: 5%">操作</th>
                     </tr>
                     {% for foo in tasks %}
                         <tr style="text-align: center">
-                            <td style="width: 6%">{{ foo.task_originator }}</td>
-                            <td style="width: 5%">{{ foo.task_level.name }}</td>
-                            <td style="width: 22%">{{ foo.task_name }}</td>
-                            <td style="width: 5%">{{ foo.task_start_time }}</td>
-                            <td style="width: 5%">{{ foo.task_end_time }}</td>
-                            <td style="width: 10%">{{ foo.mark }}</td>
-                            <td style="width: 6%"><a href="javascript:;" value="{{ foo.id }}" class="mr-1 delay"
-                                                     data-toggle="modal"
-                                                     data-target="#delayseeUserInfo">延期</a>/<a href="javascript:;"
-                                                                                               class="submit_task"
-                                                                                               value="{{ foo.id }}">提交</a>
+                            <td>{{ foo.task_originator }}</td>
+                            <td>{{ foo.task_level.name }}</td>
+                            <td>{{ foo.task_name }}</td>
+                            <td>{{ foo.task_start_time }}</td>
+                            <td>{{ foo.task_end_time }}</td>
+                            <td>{{ foo.mark }}</td>
+                            <td><a href="javascript:;" value="{{ foo.id }}" class="mr-1 delay"
+                                   data-toggle="modal"
+                                   data-target="#delayseeUserInfo">延期</a>/<a href="javascript:;"
+                                                                             class="submit_task"
+                                                                             value="{{ foo.id }}">提交</a>
                             </td>
                         </tr>
                     {% endfor %}
                 </table>
             </div>
-            <span style="font-size: 1.5em"><b>我的发布</b></span>
+            <span style="font-size: 1.5em"><b>逾期任务</b></span>
             <div style="margin-top: -10px">
                 <hr>
             </div>
@@ -45,29 +45,26 @@
                     <th style="width: 5%">任务等级</th>
                     <th style="width: 20%">任务内容</th>
                     <th style="width: 5%">开始时间</th>
-                    <th style="width: 5%">计划完成时间</th>
-                    <th style="width: 10%">备注</th>
+                    <th style="width: 6%">计划完成时间</th>
+                    <th style="width: 10%">申请延期时间</th>
                     <th style="width: 5%">操作</th>
                 </tr>
                 {% for foo in releases %}
                     <tr style="text-align: center">
-                        <td style="width: 6%">{{ foo.task_recipient }}</td>
-                        <td style="width: 5%">{{ foo.task_level.name }}</td>
-                        <td style="width: 20%">{{ foo.task_name }}</td>
-                        <td style="width: 5%">{{ foo.task_start_time }}</td>
-                        <td style="width: 5%">{{ foo.task_end_time }}</td>
-                        <td style="width: 10%">{{ foo.mark }}</td>
-                        <td style="width: 6%"><a href="javascript:;" class="mr-1" data-toggle="modal"
-                                                 data-target="#seeUserInfo" value="{{ foo.id }}">修改</a>/
+                        <td>{{ foo.task_recipient }}</td>
+                        <td>{{ foo.task_level.name }}</td>
+                        <td>{{ foo.task_name }}</td>
+                        <td>{{ foo.task_start_time }}</td>
+                        <td>{{ foo.task_end_time }}</td>
+                        <td>{{ foo.mark }}</td>
+                        <td><a href="javascript:;" class="mr-1" data-toggle="modal"
+                               data-target="#seeUserInfo" value="{{ foo.id }}">修改</a>/
                             <a href="javascript:;" class="del" value="{{ foo.id }}">删除</a></td>
                     </tr>
                 {% endfor %}
             </table>
-            <span style="font-size: 1.5em"><b>我的审核</b></span>
-            <div style="margin-top: -10px">
-                <hr>
-            </div>
-            <span style="font-size: 1.2em"><b>延期审核</b></span>
+
+            <span style="font-size: 1.5em"><b>延期待审核</b></span>
             <div style="margin-top: -10px">
                 <hr>
             </div>
@@ -93,7 +90,7 @@
                     </tr>
                 {% endfor %}
             </table>
-            <span style="font-size: 1.2em"><b>任务通过审核</b></span>
+            <span style="font-size: 1.5em"><b>提交待审核</b></span>
             <div style="margin-top: -10px">
                 <hr>
             </div>
@@ -115,13 +112,14 @@
                         <td style="width: 5%">{{ foo.task_name.task_start_time }}</td>
                         <td style="width: 5%">{{ foo.task_name.task_end_time }}</td>
                         <td style="width: 10%">{{ foo.timer|date:"Y/m/d" }}</td>
-                        <td style="width: 6%"><a href="javascript:;" class="examine_task" value="{{ foo.id }}">同意</a></td>
+                        <td style="width: 6%"><a href="javascript:;" class="examine_task" value="{{ foo.id }}">同意</a>
+                        </td>
                     </tr>
                 {% endfor %}
             </table>
         </div>
-        <div class="col-lg-4 col-md-12 col-12 col-sm-12">
-            <div class="card">
+        <div style="width:25%">
+            <div class="card" style="margin-left:20px;width: 95%">
                 <div class="card-header" style="background-color: #574b90">
                     <h3 style="text-align: center; color: white">发布任务</h3>
                 </div>
@@ -134,7 +132,7 @@
                                 请填入任务内容
                             </div>
                             <label style="font-size: medium">任务优先级</label>
-                            <select multiple class="form-control" name="level" id="id_select2_1"
+                            <select  class="form-control" name="level" id="id_select2_1"
                                     style="width: 100%">
                                 <option value="">任务优先级</option>
                                 {% if levels %}{% for level in levels %}
@@ -143,7 +141,7 @@
                             </select>
                             <script>var selectorx = $('#id_select2_1').select2();</script>
                             <label style="font-size: medium">待办责任人</label>
-                            <select multiple class="form-control" name="recipient" id="id_select2_demo4"
+                            <select  class="form-control" name="recipient" id="id_select2_demo4"
                                     style="width: 100%">
                                 <option value="">选择同事</option>
                                 {% if users %}{% for user in users %}
@@ -276,25 +274,25 @@
     </div>
 
     <script>
-    var orig = window.location.origin;
+        var orig = window.location.origin;
         // 删除我发布的任务
         $(".del").click(function () {
             console.log($(this).attr("value"));
-            $.post(orig+"/task/my/release/task/delete/", {"task_id": $(this).attr("value")}, function () {
+            $.post(orig + "/task/my/release/task/delete/", {"task_id": $(this).attr("value")}, function () {
                 location.reload();
             })
         });
         // 提交我完成的任务
         $(".submit_task").click(function () {
             console.log($(this).attr("value"));
-            $.post(orig+"/task/my/receive/task/submit/", {"task_id": $(this).attr("value")}, function () {
+            $.post(orig + "/task/my/receive/task/submit/", {"task_id": $(this).attr("value")}, function () {
                 location.reload();
             })
         });
         // 审核完成的任务
         $(".examine_task").click(function () {
             console.log($(this).attr("value"));
-            $.post(orig+"/task/my/examine/submit/task/", {"task_id": $(this).attr("value")}, function () {
+            $.post(orig + "/task/my/examine/submit/task/", {"task_id": $(this).attr("value")}, function () {
                 location.reload();
             })
         });
@@ -313,7 +311,7 @@
             var taskid = $("#tempid").val();
             var newtime = $("#newtime").val();
 
-            $.post(orig+"/task/my/release/task/modify/", {
+            $.post(orig + "/task/my/release/task/modify/", {
                 task_id: taskid,
                 modify_end_time: newtime
             }, function () {
@@ -335,7 +333,7 @@
         $("#delaysubmit").click(function () {
             var taskid = $("#delaytempid").val();
             var newtime = $("#delaynewtime").val();
-            $.post(orig+"/task/my/release/task/delay/", {
+            $.post(orig + "/task/my/release/task/delay/", {
                 task_id: taskid,
                 modify_end_time: newtime
             }, function () {
@@ -345,7 +343,7 @@
         });
         $(".approve").click(function () {
             var id = $(this).attr("value");
-            $.post(orig+"/task/my/release/task/examine/", {modify_id: id}, function () {
+            $.post(orig + "/task/my/release/task/examine/", {modify_id: id}, function () {
                 location.reload();
             });
         })
