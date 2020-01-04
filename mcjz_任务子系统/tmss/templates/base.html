@@ -1,0 +1,316 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no"
+          name="viewport">
+    <title>闽宸建筑有限公司</title>
+
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'ionicons/css/ionicons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome/web-fonts-with-css/css/fontawesome-all.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'summernote/summernote-lite.css' %}">
+    <link rel="stylesheet" href="{% static 'flag-icon-css/css/flag-icon.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/demo.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+        .row .table tr th:nth-child(1), .row .table tr th:nth-child(3),
+        .row .table tr th:nth-child(6), .row .table tr th:last-child {
+            width: 100px;
+        }
+
+        .row .table tr td:nth-child(1) {
+
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .row .table td:nth-child(2) div, .row .table td:nth-child(6) div {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .row .table tr th:nth-child(1), .row .table tr th:nth-child(3),
+        .row .table tr th:nth-child(6), .row .table tr th:last-child {
+            width: 100px;
+        }
+
+        .row .table tr td:nth-child(1) {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .row .table tr th {
+            text-align: center;
+        }
+    </style>
+
+    <script type="text/javascript" src="http://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+    <script src="{% static 'js/echarts.min.js' %}"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+</head>
+
+<body>
+<div id="app">
+    <div class="main-wrapper">
+        <div class="navbar-bg" style="height: 70px"></div>
+        <nav class="navbar navbar-expand-lg main-navbar">
+            <form class="form-inline mr-auto">
+                <ul class="navbar-nav mr-3">
+                    <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"><i
+                            class="ion ion-navicon-round"></i></a></li>
+                    <li><a href="#" data-toggle="search" class="nav-link nav-link-lg d-sm-none"><i
+                            class="ion ion-search"></i></a></li>
+                </ul>
+                <div class="search-element">
+                    <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn" type="submit"><i class="ion ion-search"></i></button>
+                </div>
+            </form>
+            <ul class="navbar-nav navbar-right">
+                {#                <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"#}
+                {#                                                             class="nav-link notification-toggle nav-link-lg beep"><i#}
+                {#                        class="ion ion-ios-bell-outline"></i></a>#}
+                {#                    <div class="dropdown-menu dropdown-list dropdown-menu-right">#}
+                {#                        <div class="dropdown-header">注意事项#}
+                {#                            <div class="float-right">#}
+                {#                                <a href="#">查看所有</a>#}
+                {#                            </div>#}
+                {#                        </div>#}
+                {#                        <div class="dropdown-list-content">#}
+                {#                            <a href="#" class="dropdown-item dropdown-item-unread">#}
+                {#                                <img alt="image" src="{{ icon }}"#}
+                {#                                     class="rounded-circle dropdown-item-img">#}
+                {#                                <div class="dropdown-item-desc">#}
+                {#                                    <b>{{ username }}</b>已经 <b>xxxxx</b> to <b>Done</b>#}
+                {#                                    <div class="time">10 Hours Ago</div>#}
+                {#                                </div>#}
+                {#                            </a>#}
+                {#                        </div>#}
+                {#                    </div>#}
+                {#                </li>#}
+                <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg">
+                    <i class="ion ion-android-person d-lg-none"></i>
+                    <div class="d-sm-none d-lg-inline-block">Hi, <b>{{ username }}</b></div>
+                </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a href="{% url 'pim' %}" class="dropdown-item has-icon">
+                            <i class="ion ion-android-person"></i> 个人信息
+                        </a>
+                        <a href="{% url 'logout' %}" class="dropdown-item has-icon">
+                            <i class="ion ion-log-out"></i> 退出登录
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        <div class="main-sidebar">
+            <aside id="sidebar-wrapper">
+                <div class="sidebar-brand">
+                    <a href="{% url 'index' %}">闽宸建筑</a>
+                </div>
+                <div class="sidebar-user">
+                    <div class="sidebar-user-picture">
+                        <img alt="image" src="{{ icon }}">
+                    </div>
+                    <div class="sidebar-user-details">
+                        <div class="user-name">{{ username }}</div>
+                        <div class="user-role">
+                            {{ department }}
+                        </div>
+                    </div>
+                </div>
+                {#                左边栏目#}
+                <ul class="sidebar-menu">
+                    <li class="menu-header">Dashboard</li>
+                    <li class="active">
+                        <a href="{% url 'index' %}"><i class="ion ion-speedometer"></i><span>任务概览</span></a>
+                    </li>
+                    <li>
+                        <a href="{% url 'analysis' %}"><i class="ion ion-card"></i>统计分析<span></span></a>
+                    </li>
+                    <li class="menu-header">Components</li>
+                    <li>
+                        <a href="#" class="has-dropdown"><i
+                                class="ion ion-ios-albums-outline"></i><span>我的任务</span></a>
+                        <ul class="menu-dropdown">
+                            <li><a href="{% url 'my_all_task' %}"><i class="ion ion-ios-circle-outline"></i> 全部任务</a>
+                            </li>
+                            <li><a href="{% url 'my_finish_task' %}"><i class="ion ion-ios-circle-outline"></i>已完成</a>
+                            </li>
+                            <li><a href="{% url 'my_incomplete_task' %}"><i
+                                    class="ion ion-ios-circle-outline"></i>未完成</a></li>
+                            <li><a href="{% url 'my_current_task' %}"><i class="ion ion-ios-circle-outline"></i>当天到期</a>
+                            </li>
+                            <li><a href="{% url 'my_overtime_task' %}"><i
+                                    class="ion ion-ios-circle-outline"></i>超时任务</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#" class="has-dropdown"><i class="ion ion-edit"></i><span>我的发布</span></a>
+                        <ul class="menu-dropdown">
+                            <li><a href="{% url 'my_release_all_task' %}"><i class="ion ion-ios-circle-outline"></i>
+                                全部任务</a></li>
+                            <li><a href="{% url 'my_release_finish_task' %}"><i class="ion ion-ios-circle-outline"></i>已完成</a>
+                            </li>
+                            <li><a href="{% url 'my_release_incomplete_task' %}"><i
+                                    class="ion ion-ios-circle-outline"></i>未完成</a></li>
+                            <li><a href="{% url 'my_release_current_task' %}"><i class="ion ion-ios-circle-outline"></i>当天到期</a>
+                            </li>
+                            <li><a href="{% url 'my_release_overtime_task' %}"><i
+                                    class="ion ion-ios-circle-outline"></i>超时任务</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#" class="has-dropdown"><i class="ion ion-flag"></i><span>所有任务</span></a>
+                        <ul class="menu-dropdown">
+                            <li><a href="{% url 'all_task' %}"><i class="ion ion-ios-circle-outline"></i> 全部任务</a></li>
+                            <li><a href="{% url 'finish_task' %}"><i class="ion ion-ios-circle-outline"></i>已完成</a></li>
+                            <li><a href="{% url 'incomplete_task' %}"><i class="ion ion-ios-circle-outline"></i>未完成</a>
+                            </li>
+                            <li><a href="{% url 'current_task' %}"><i class="ion ion-ios-circle-outline"></i>当天到期</a>
+                            </li>
+                            <li><a href="{% url 'overtime_task' %}"><i class="ion ion-ios-circle-outline"></i>超时任务</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#" class="has-dropdown"><i class="ion ion-person"></i><span>个人中心</span></a>
+                        <ul class="menu-dropdown">
+                            <li><a href="{% url 'pim' %}"><i class="ion ion-ios-circle-outline"></i>个人信息</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </aside>
+        </div>
+        <div class="main-content">
+            {% block main_content %}{% endblock %}
+        </div>
+        <footer class="main-footer">
+            <div class="footer-left">
+                Copyright &copy; 2019
+                <div class="bullet"></div>
+                More Information <a href="#" target="_blank" title="闽宸建筑">闽宸建筑</a>
+            </div>
+            <div class="footer-right"></div>
+        </footer>
+    </div>
+</div>
+
+<script src="{% static 'js/chart.min.js' %}"></script>
+<script src="{% static 'summernote/summernote-lite.js' %}"></script>
+
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/popper.js' %}"></script>
+<script src="{% static 'js/tooltip.js' %}"></script>
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'nicescroll/jquery.nicescroll.min.js' %}"></script>
+<script src="{% static 'scroll-up-bar/dist/scroll-up-bar.min.js' %}"></script>
+<script src="{% static 'js/sa-functions.js' %}"></script>
+<script src="{% static 'js/scripts.js' %}"></script>
+<script src="{% static 'js/custom.js' %}"></script>
+{#<script src="{% static 'js/demo.js' %}"></script>#}
+<script type="text/javascript">
+    var ddd = new Date();
+    var day = ddd.getDate();
+    var month = ddd.getMonth();
+    if (ddd.getMonth() < 10) {
+        month = "0" + (ddd.getMonth() + 1);
+    }
+    if (ddd.getDate() < 10) {
+        day = "0" + ddd.getDate();
+    }
+    var datew = ddd.getFullYear() + "-" + (month + 1) + "-" + day;
+    var datew = datew.toString();
+
+    $(".bt").val(datew);
+
+
+    $('.row .table td div').each(function () {
+        if ($(this).height() <= 60) {
+            $(this).siblings('a').hide();
+        } else {
+            $(this).css("height", "60px");
+
+        }
+
+    });
+    $('.sh').click(function () {
+        var htm = $(this).find('.sh-btn').html();
+        if (htm == "展开") {
+            $(this).find('.sh-btn').html('收起');
+            $(this).siblings('div').css('height', 'auto');
+        } else {
+            $(this).find('.sh-btn').html('展开');
+            $(this).siblings('div').css('height', '60px');
+
+        }
+    });
+    $(".row .table tr").each(function () {
+        var time1 = $(this).children("td").eq(3).html() + "";
+        var time2 = $(this).children("td").eq(4).html() + "";
+        $(this).children("td").eq(3).html(time1.replace(/年|月|日/g, "/").substring(0, time1.length - 1));
+        $(this).children("td").eq(4).html(time2.replace(/年|月|日/g, "/").substring(0, time2.length - 1));
+    });
+</script>
+<script type="text/javascript">
+    var orig = window.location.origin;
+    $("body").append('<div class="demo-settings"><div class="demo-settings-toggle"><i class="ion ion-gear-a"></i></div><div class="demo-settings-options"><ul><li class="demo-toggle-skin" style="background-color: #574B90;" title="Default"></li><li class="demo-toggle-skin" style="background-color: #3F52E3;" title="Blue"></li><li class="demo-toggle-skin" style="background-color: #39065A;" title="Deep Purple"></li><li class="demo-toggle-skin" style="background-color: #3DC7BE;" title="Light Blue"></li><li class="demo-toggle-skin" style="background-color: #212330;" title="Dark Sidebar"></li></ul></div></div>');
+
+    var skin = function (color) {
+        $("#skin-css").remove();
+        if (color == 'default') return;
+        $("head").append($("<link/>", {
+            rel: 'stylesheet',
+            href: '{% static 'css/skins' %}' + '/' + color + '.css',
+            id: 'skin-css'
+        }));
+    };
+
+    $(".demo-settings-toggle").on("click", function () {
+        if ($(".demo-settings")[0].classList.contains("active")) {
+            $(".demo-settings")[0].classList.remove('active');
+        } else {
+            $(".demo-settings")[0].classList += ' active';
+        }
+    });
+
+    if (localStorage.getItem("skin")) {
+        skin(localStorage.getItem("skin").replace(/ /g, ''));
+    }
+
+    $(".demo-toggle-skin").each(function (i) {
+        let me = $(this);
+        me.on("click", function (e) {
+            let _this = e.target;
+            localStorage.removeItem("skin");
+            localStorage.setItem("skin", _this.attributes.title.nodeValue.toLowerCase());
+            skin(_this.attributes.title.nodeValue.toLowerCase().replace(/ /g, ''));
+        });
+    });
+    $(".menu-dropdown li a").click(function () {
+
+        console.log($(this).attr("href"));
+        var loca = $(this).attr("href");
+        //console.log(window.location.origin)
+        var href = orig + loca;
+        console.log(href);
+        if (loca == "/index/") {
+            window.location.href=href;
+            location.reload();
+        } else {
+            $.get(href, {}, function (result) {
+                $(".main-content").eq(0).html(result);
+            });
+        }
+        return false;
+    })
+</script>
+</body>
+</html>

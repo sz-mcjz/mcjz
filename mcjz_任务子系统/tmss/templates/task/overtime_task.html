@@ -1,0 +1,47 @@
+
+    <table class="table table-bordered" style="text-align: center">
+        <tr>
+            <td>编号</td>
+            <td>任务发起人</td>
+            <td>任务责任人</td>
+            <td>任务内容</td>
+            <td>任务等级</td>
+            <td>发布时间</td>
+            <td>开始时间</td>
+            <td>计划完成时间</td>
+            <td>备注</td>
+            <td>实际完成时间</td>
+            <td>逾期天数</td>
+        </tr>
+        {% if not tasks %}
+            <tr><td colspan="11">暂无内容</td></tr>
+        {% endif %}
+            {% for task in tasks %}
+                <tr>
+                    <td style="width: 4%">{{ task.id }}</td>
+                    {#编号#}
+                    <td style="width: 6%">{{ task.task_originator }}</td>
+                    {#发起人#}
+                    <td style="width: 6%">{{ task.task_recipient }}</td>
+                    {#责任人#}
+                    <td style="width: 26%">{{ task.task_name }}</td>
+                    {#内容#}
+                    <td style="width: 6%">{{ task.task_level.name }}</td>
+                    {#等级#}
+                    <td style="width: 11%">{{ task.release_time }}</td>
+                    {#发布时间#}
+                    <td style="width: 9%">{{ task.task_start_time }}</td>
+                    {#任务开始时间#}
+                    <td style="width: 9%">{{ task.task_end_time }}</td>
+                    {#计划完成时间#}
+                    <td style="width: 10%">{{ task.mark }}</td>
+                    {#备注#}
+                    <td style="width: 7%">{{ task.virtual_end_time }}</td>
+                    {# 实际完成时间#}
+                    <td style="width: 5%">{{ task.yuqi }}</td>
+                    {#逾期天数#}
+                </tr>
+            {% endfor %}
+
+    </table>
+

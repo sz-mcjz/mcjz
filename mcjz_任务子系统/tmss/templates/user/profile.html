@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block main_content %}
+    <div class="modal fade" id="seeUserInfo1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <form action="profile" method="post">
+                <div class="modal-content" style="margin-top: 100px">
+                    <h4 style="padding-top: 15px;padding-left: 15px">修改密码</h4>
+                    <div class="modal-body">
+                        <table class="table" style="margin-bottom:0px;" id="changepwd">
+                            <tbody>
+                            <tr>
+                                <td wdith="20%">用户名:</td>
+                                <td width="80%">
+                                    <input type="text" class="form-control" name="username"
+                                           maxlength="18" readonly="readonly" value="{{ username }}" id="username"
+                                           autocomplete="off"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td wdith="20%">电 话:</td>
+                                <td width="80%">
+                                    <input type="text" class="form-control" name="telephone"
+                                           maxlength="18" readonly="readonly" value="{{ telephone }}" id="telephone"
+                                           autocomplete="off"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td wdith="20%">部 门:</td>
+                                <td width="80%">
+                                    <input type="text" class="form-control" name="department"
+                                           maxlength="18" readonly="readonly" value="{{ department }}"
+                                           id="department"
+                                           autocomplete="off"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td wdith="20%">旧密码:</td>
+                                <td width="80%"><input type="password" class="form-control" name="old_password"
+                                                       id="old_password"
+                                                       maxlength="18" autocomplete="off"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td wdith="20%">新密码:</td>
+                                <td width="80%"><input type="password" class="form-control" name="password"
+                                                       maxlength="18"
+                                                       id="password"
+                                                       autocomplete="off"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td wdith="20%">确认密码:</td>
+                                <td width="80%"><input type="password" class="form-control" name="new_password"
+                                                       id="new_password"
+                                                       maxlength="18" autocomplete="off"/>
+                                    <span style="color: red;margin-top: 10px;display: block;" id="tishi"></span>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr></tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-toggle="modal"
+                                data-target="#seeUserInfo1" id="cancel">取消
+                        </button>
+                        <button class="btn btn-primary" id="changesubmit">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

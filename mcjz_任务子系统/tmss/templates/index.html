@@ -1,0 +1,353 @@
+{% extends 'base.html' %}
+{% block main_content %}
+    <div class="row">
+        <div class="col-lg-8 col-md-6 col-12">
+            <div>
+                <span style="font-size: 1.5em"><b>我的任务</b></span>
+                <div style="margin-top: -10px">
+                    <hr>
+                </div>
+                <table class="table table-bordered">
+                    <tr>
+                        <th style="width: 6%">任务发起人</th>
+                        <th style="width: 5%">任务等级</th>
+                        <th style="width: 22%">任务内容</th>
+                        <th style="width: 5%">开始时间</th>
+                        <th style="width: 5%">计划完成时间</th>
+                        <th style="width: 10%">备注</th>
+                        <th style="width: 5%">操作</th>
+                    </tr>
+                    {% for foo in tasks %}
+                        <tr style="text-align: center">
+                            <td style="width: 6%">{{ foo.task_originator }}</td>
+                            <td style="width: 5%">{{ foo.task_level.name }}</td>
+                            <td style="width: 22%">{{ foo.task_name }}</td>
+                            <td style="width: 5%">{{ foo.task_start_time }}</td>
+                            <td style="width: 5%">{{ foo.task_end_time }}</td>
+                            <td style="width: 10%">{{ foo.mark }}</td>
+                            <td style="width: 6%"><a href="javascript:;" value="{{ foo.id }}" class="mr-1 delay"
+                                                     data-toggle="modal"
+                                                     data-target="#delayseeUserInfo">延期</a>/<a href="javascript:;"
+                                                                                               class="submit_task"
+                                                                                               value="{{ foo.id }}">提交</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <span style="font-size: 1.5em"><b>我的发布</b></span>
+            <div style="margin-top: -10px">
+                <hr>
+            </div>
+            <table class="table table-bordered" id="fabu">
+                <tr>
+                    <th style="width: 6%">待办责任人</th>
+                    <th style="width: 5%">任务等级</th>
+                    <th style="width: 20%">任务内容</th>
+                    <th style="width: 5%">开始时间</th>
+                    <th style="width: 5%">计划完成时间</th>
+                    <th style="width: 10%">备注</th>
+                    <th style="width: 5%">操作</th>
+                </tr>
+                {% for foo in releases %}
+                    <tr style="text-align: center">
+                        <td style="width: 6%">{{ foo.task_recipient }}</td>
+                        <td style="width: 5%">{{ foo.task_level.name }}</td>
+                        <td style="width: 20%">{{ foo.task_name }}</td>
+                        <td style="width: 5%">{{ foo.task_start_time }}</td>
+                        <td style="width: 5%">{{ foo.task_end_time }}</td>
+                        <td style="width: 10%">{{ foo.mark }}</td>
+                        <td style="width: 6%"><a href="javascript:;" class="mr-1" data-toggle="modal"
+                                                 data-target="#seeUserInfo" value="{{ foo.id }}">修改</a>/
+                            <a href="javascript:;" class="del" value="{{ foo.id }}">删除</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <span style="font-size: 1.5em"><b>我的审核</b></span>
+            <div style="margin-top: -10px">
+                <hr>
+            </div>
+            <span style="font-size: 1.2em"><b>延期审核</b></span>
+            <div style="margin-top: -10px">
+                <hr>
+            </div>
+            <table class="table table-bordered" id="fabu">
+                <tr>
+                    <th style="width: 6%">待办责任人</th>
+                    <th style="width: 5%">任务等级</th>
+                    <th style="width: 20%">任务内容</th>
+                    <th style="width: 5%">开始时间</th>
+                    <th style="width: 6%">计划完成时间</th>
+                    <th style="width: 10%">申请延期时间</th>
+                    <th style="width: 5%">操作</th>
+                </tr>
+                {% for foo in to_examines %}
+                    <tr style="text-align: center">
+                        <td style="width: 6%">{{ foo.task_name.task_recipient }}</td>
+                        <td style="width: 5%">{{ foo.task_name.task_level.name }}</td>
+                        <td style="width: 20%">{{ foo.task_name.task_name }}</td>
+                        <td style="width: 5%">{{ foo.task_name.task_start_time }}</td>
+                        <td style="width: 5%">{{ foo.task_origin_end_time }}</td>
+                        <td style="width: 10%">{{ foo.task_modify_end_time|date:"Y/m/d" }}</td>
+                        <td style="width: 6%"><a href="javascript:;" class="approve" value="{{ foo.id }}">同意</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <span style="font-size: 1.2em"><b>任务通过审核</b></span>
+            <div style="margin-top: -10px">
+                <hr>
+            </div>
+            <table class="table table-bordered" id="fabu">
+                <tr>
+                    <th style="width: 6%">待办责任人</th>
+                    <th style="width: 5%">任务等级</th>
+                    <th style="width: 20%">任务内容</th>
+                    <th style="width: 5%">开始时间</th>
+                    <th style="width: 6%">计划完成时间</th>
+                    <th style="width: 10%">实际完成时间</th>
+                    <th style="width: 5%">操作</th>
+                </tr>
+                {% for foo in submit_examines %}
+                    <tr style="text-align: center">
+                        <td style="width: 6%">{{ foo.task_name.task_recipient }}</td>
+                        <td style="width: 5%">{{ foo.task_name.task_level.name }}</td>
+                        <td style="width: 20%">{{ foo.task_name.task_name }}</td>
+                        <td style="width: 5%">{{ foo.task_name.task_start_time }}</td>
+                        <td style="width: 5%">{{ foo.task_name.task_end_time }}</td>
+                        <td style="width: 10%">{{ foo.timer|date:"Y/m/d" }}</td>
+                        <td style="width: 6%"><a href="javascript:;" class="examine_task" value="{{ foo.id }}">同意</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="col-lg-4 col-md-12 col-12 col-sm-12">
+            <div class="card">
+                <div class="card-header" style="background-color: #574b90">
+                    <h3 style="text-align: center; color: white">发布任务</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="">
+                        <div class="form-group">
+                            <label style="font-size: medium">任务内容</label>
+                            <textarea name="content" class="form-control" required></textarea>
+                            <div class="invalid-feedback">
+                                请填入任务内容
+                            </div>
+                            <label style="font-size: medium">任务优先级</label>
+                            <select multiple class="form-control" name="level" id="id_select2_1"
+                                    style="width: 100%">
+                                <option value="">任务优先级</option>
+                                {% if levels %}{% for level in levels %}
+                                    <option value="{{ level.name }}">{{ level.name }}</option>
+                                {% endfor %}{% endif %}
+                            </select>
+                            <script>var selectorx = $('#id_select2_1').select2();</script>
+                            <label style="font-size: medium">待办责任人</label>
+                            <select multiple class="form-control" name="recipient" id="id_select2_demo4"
+                                    style="width: 100%">
+                                <option value="">选择同事</option>
+                                {% if users %}{% for user in users %}
+                                    <option value="{{ user.username }}">{{ user.username }}</option>
+                                {% endfor %}{% endif %}
+
+                            </select>
+                            <script>var selectorx = $('#id_select2_demo4').select2();</script>
+                            <div class="invalid-feedback">
+                                请填入待办责任人
+                            </div>
+                            <label style="font-size: medium">发起日期</label>
+                            <input type="date" name="start_time" class="form-control bt" required>
+                            <div class="invalid-feedback">
+                                请填入发起日期
+                            </div>
+                            <label style="font-size: medium">计划完成日期</label>
+                            <input type="date" name="end_time" class="form-control bt" required>
+                            <div class="invalid-feedback">
+                                请填入计划完成日期
+                            </div>
+                            <label style="font-size: medium">备注</label>
+                            <input type="text" name="mark" class="form-control" required>
+                            <div class="invalid-feedback">
+                                请填入备注
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-primary" type="submit">发布任务</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-12 col-12 col-sm-12">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="seeUserInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <form action="" method="post">
+                <div class="modal-content" style="margin-top: 300px">
+                    <h4 style="padding-top: 15px;padding-left: 15px" id="biaoti">修改任务</h4>
+                    <div class="modal-body">
+                        <table class="table" style="margin-bottom:0px;">
+                            <tbody>
+                            <tr>
+                                <td wdith="20%">任务内容:</td>
+                                <td width="80%">
+                                    <input type="text" class="form-control" readonly="readonly" value=""
+                                           id="tempcontent"
+                                           autocomplete="off"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td wdith="20%">计划完成时间:</td>
+                                <td width="80%"><input type="text" class="form-control" id="tempendtime" readonly
+                                                       maxlength="18" autocomplete="off"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td wdith="20%" id="newendtime">调整完成时间:</td>
+                                <td width="80%"><input type="date" class="form-control" id="newtime"
+                                                       autocomplete="off"/>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr><input type="hidden" value="" id="tempid">
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-toggle="modal"
+                                data-target="#seeUserInfo" id="cancel">取消
+                        </button>
+                        <button class="btn btn-primary" id="submit">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="delayseeUserInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <form action="" method="post">
+                <div class="modal-content" style="margin-top: 300px">
+                    <h4 style="padding-top: 15px;padding-left: 15px">申请延期</h4>
+                    <div class="modal-body">
+                        <table class="table" style="margin-bottom:0px;">
+                            <tbody>
+                            <tr>
+                                <td wdith="20%">任务内容:</td>
+                                <td width="80%">
+                                    <input type="text" class="form-control" readonly="readonly" value=""
+                                           id="delaytempcontent"
+                                           autocomplete="off"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td wdith="20%">计划完成时间:</td>
+                                <td width="80%"><input type="text" class="form-control" id="delaytempendtime" readonly
+                                                       maxlength="18" autocomplete="off"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td wdith="20%" id="newendtime">申请完成时间:</td>
+                                <td width="80%"><input type="date" class="form-control" id="delaynewtime"
+                                                       autocomplete="off"/>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr><input type="hidden" value="" id="delaytempid">
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-toggle="modal"
+                                data-target="#delayseeUserInfo" id="cancel">取消
+                        </button>
+                        <button class="btn btn-primary" id="delaysubmit">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    var orig = window.location.origin;
+        // 删除我发布的任务
+        $(".del").click(function () {
+            console.log($(this).attr("value"));
+            $.post(orig+"/task/my/release/task/delete/", {"task_id": $(this).attr("value")}, function () {
+                location.reload();
+            })
+        });
+        // 提交我完成的任务
+        $(".submit_task").click(function () {
+            console.log($(this).attr("value"));
+            $.post(orig+"/task/my/receive/task/submit/", {"task_id": $(this).attr("value")}, function () {
+                location.reload();
+            })
+        });
+        // 审核完成的任务
+        $(".examine_task").click(function () {
+            console.log($(this).attr("value"));
+            $.post(orig+"/task/my/examine/submit/task/", {"task_id": $(this).attr("value")}, function () {
+                location.reload();
+            })
+        });
+        //修改按钮事件
+        $(".mr-1").click(function () {
+            //我发布的任务  修改
+            var id = $(this).attr("value");
+            var content = $(this).parent("td").siblings().eq(2).html();
+            var endtime = $(this).parent("td").siblings().eq(4).html();
+            $("#tempid").val(id);
+            $("#tempcontent").val(content);
+            $("#tempendtime").val(endtime);
+        });
+        //修改提交请求
+        $("#submit").click(function () {
+            var taskid = $("#tempid").val();
+            var newtime = $("#newtime").val();
+
+            $.post(orig+"/task/my/release/task/modify/", {
+                task_id: taskid,
+                modify_end_time: newtime
+            }, function () {
+                location.reload();
+            });
+
+            return false;
+        });
+        // 延期按钮事件
+        $(".delay").click(function () {
+            var id = $(this).attr("value");
+            var content = $(this).parent("td").siblings().eq(2).html();
+            var endtime = $(this).parent("td").siblings().eq(4).html();
+            $("#delaytempid").val(id);
+            $("#delaytempcontent").val(content);
+            $("#delaytempendtime").val(endtime);
+            console.log(id);
+        });
+        $("#delaysubmit").click(function () {
+            var taskid = $("#delaytempid").val();
+            var newtime = $("#delaynewtime").val();
+            $.post(orig+"/task/my/release/task/delay/", {
+                task_id: taskid,
+                modify_end_time: newtime
+            }, function () {
+                {#location.reload();#}
+            });
+            return false;
+        });
+        $(".approve").click(function () {
+            var id = $(this).attr("value");
+            $.post(orig+"/task/my/release/task/examine/", {modify_id: id}, function () {
+                location.reload();
+            });
+        })
+    </script>
+{% endblock %}
