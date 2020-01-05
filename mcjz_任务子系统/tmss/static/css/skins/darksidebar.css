@@ -44,3 +44,6 @@
 .main-sidebar .sidebar-user .sidebar-user-details .user-name {
 	color: #ededed;	
 }
+.card-header h3, .fabu{
+  background-color:#3f4257 !important;
+}

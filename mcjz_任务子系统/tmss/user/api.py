@@ -60,33 +60,33 @@ def index(request):
         }
         return render_to_response('index.html', context=data)
     if request.method == 'POST':
-        print('触发发布任务')
         uuid = request.COOKIES.get('uuid')
         user = Staff.objects.get(telephone=uuid)
-        new_task = Task()
-        new_task.task_originator = user.username
-        new_task.task_recipient = request.POST.get('recipient')
-        new_task.task_name = request.POST.get('content')
-        new_task.task_level = TaskLevel.objects.get(name=request.POST.get('level'))
-        new_task.task_start_time = request.POST.get('start_time')
-        new_task.task_end_time = request.POST.get('end_time')
-        new_task.mark = request.POST.get('mark')
-        new_task.save()
-        staff = [user for user in Staff.objects.all()]
-        staff.remove(Staff.objects.get(telephone=uuid))
-        print("--" * 50)
-        print(user.telephone)
-        data = {
-            'username': user.username,
-            'icon': user.icon,
-            'department': user.department.name,
-            'telephone': user.telephone,
-            'levels': [level for level in TaskLevel.objects.all()],
-            'users': staff,
-            'tasks': [task for task in Task.objects.filter(task_recipient=user.username)],
-            'releases': [task for task in Task.objects.filter(task_originator=user.username)],
-        }
-        return render_to_response('index.html', context=data)
+        try:
+            new_task = Task()
+            new_task.task_originator = user.username
+            new_task.task_recipient = request.POST.get('recipient')
+            new_task.task_name = request.POST.get('content')
+            new_task.task_level = TaskLevel.objects.get(name=request.POST.get('level'))
+            new_task.task_start_time = request.POST.get('start_time')
+            new_task.task_end_time = request.POST.get('end_time')
+            new_task.mark = request.POST.get('mark')
+            new_task.save()
+            staff = [user for user in Staff.objects.all()]
+            staff.remove(Staff.objects.get(telephone=uuid))
+            data = {
+                'username': user.username,
+                'icon': user.icon,
+                'department': user.department.name,
+                'telephone': user.telephone,
+                'levels': [level for level in TaskLevel.objects.all()],
+                'users': staff,
+                'tasks': [task for task in Task.objects.filter(task_recipient=user.username)],
+                'releases': [task for task in Task.objects.filter(task_originator=user.username)],
+            }
+            return JsonResponse(data={'msg': '发布成功'}, json_dumps_params={'ensure_ascii': False})
+        except:
+            return JsonResponse(data={'msg': '发布失败'}, json_dumps_params={'ensure_ascii': False})
 
 
 def profile(request):

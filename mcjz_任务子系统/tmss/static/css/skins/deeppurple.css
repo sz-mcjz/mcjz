@@ -193,3 +193,6 @@ a:hover {
 .bootstrap-tagsinput .tag {
 	background-color: #39065A;
 }
+.card-header h3,.fabu{
+  background-color:#39065A !important;
+}

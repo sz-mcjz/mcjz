@@ -120,8 +120,8 @@
         </div>
         <div style="width:25%">
             <div class="card" style="margin-left:20px;width: 95%">
-                <div class="card-header" style="background-color: #574b90">
-                    <h3 style="text-align: center; color: white">发布任务</h3>
+                <div class="card-header fabu" style="background-color: #574b90">
+                    <h3 style="text-align: center; color: white" >发布任务</h3>
                 </div>
                 <div class="card-body">
                     <form method="POST" action="">
@@ -170,7 +170,7 @@
                             </div>
                         </div>
                         <div class="card-footer">
-                            <button class="btn btn-primary" type="submit">发布任务</button>
+                            <button class="btn btn-primary" id="faburenwu">发布任务</button>
                         </div>
                     </form>
                 </div>
@@ -218,7 +218,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-toggle="modal"
-                                data-target="#seeUserInfo" id="cancel">取消
+                                data-target="#seeUserInfo" class="cancel">取消
                         </button>
                         <button class="btn btn-primary" id="submit">提交</button>
                     </div>
@@ -264,7 +264,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-toggle="modal"
-                                data-target="#delayseeUserInfo" id="cancel">取消
+                                data-target="#delayseeUserInfo" class="cancel">取消
                         </button>
                         <button class="btn btn-primary" id="delaysubmit">提交</button>
                     </div>
@@ -346,6 +346,31 @@
             $.post(orig + "/task/my/release/task/examine/", {modify_id: id}, function () {
                 location.reload();
             });
+        });
+        $("#faburenwu").click(function () {
+            console.log("点击发布任务");
+            let content = $("textarea[name='content']").val();
+            let level = $("select[name='level']").val();
+            let recipient = $("select[name='recipient']").val();
+            let start_time = $("input[name='start_time']").val();
+            let end_time = $("input[name='end_time']").val();
+            let mark = $("input[name='mark']").val();
+            let param = {content:content,level:level,recipient:recipient,
+            start_time:start_time,end_time:end_time,mark:mark};
+            console.log(content);
+            console.log(level);
+            console.log(recipient);
+            console.log(start_time);
+            console.log(end_time);
+            console.log(mark);
+            $.post(orig+"/index/",param,function (result) {
+                alert(result.msg)
+                if(result.msg == "发布成功"){
+                    window.location.replace(orig + "/index/");
+                }
+
+            });
+            return false;
         })
     </script>
 {% endblock %}
