@@ -8,7 +8,8 @@
             <div>
                 {% if users %}
                     {% for user in users %}
-                        <div class="main{{ user.id }}" style="min-width: 300px;max-width:100%;height:250px;float: left"></div>
+                        <div class="main{{ user.id }}"
+                             style="min-width: 300px;max-width:100%;height:250px;float: left"></div>
                     {% endfor %}
                 {% endif %}
             </div>
@@ -30,23 +31,53 @@
                         },
                         tooltip: {},
                         legend: {
-                            data: ['办的', '发的']
+                            data: ['我办的', '我发布的']
                         },
                         xAxis: {
-                            data: ["全部", "已完成", "未完成", "今日", "超时"]
+                            data: ["全部", "已完成", "未完成", "今日", '逾期']
                         },
-                        yAxis: {},
+                        yAxis: {
+                            type: 'value',
+                            min: 0,
+                            max: {{ max }},
+                        },
                         series: [
                             {
-                                name: '办的',
+                                name: '我办的',
                                 type: 'bar',
-                                data: [20, 4, 16, 4, 12]
+                                data: {{ user.numb1}},
+                                itemStyle: {        //上方显示数值
+                                    normal: {
+                                        label: {
+                                            show: true, //开启显示
+                                            position: 'top', //在上方显示
+                                            textStyle: { //数值样式
+                                                color: 'black',
+                                                fontSize: 10
+                                            }
+                                        }
+                                    }
+                                }
                             },
                             {
-                                name: '发的',
+                                name: '我发布的',
                                 type: 'bar',
-                                data: [20, 4, 16, 4, 12]
+                                data:{{ user.numb }},
+                                itemStyle: {        //上方显示数值
+                                    normal: {
+                                        label: {
+                                            show: true, //开启显示
+                                            position: 'top', //在上方显示
+                                            textStyle: { //数值样式
+                                                color: 'black',
+                                                fontSize: 10
+                                            }
+                                        }
+                                    }
+                                }
                             }
+
+
                         ]
                     };
                     myChart.setOption(option);

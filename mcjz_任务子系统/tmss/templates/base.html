@@ -48,6 +48,22 @@
             text-align: center;
         }
 
+        .tab-css {
+            text-align: center;
+        }
+
+        .tab-css tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .tab-css tr:nth-child(odd) {
+            background-color: rgba(0, 0, 0, .02)
+        }
+
+        .tab-hover tr:hover {
+            background-color: #fefefe;
+        }
+
     </style>
 
     <script type="text/javascript" src="http://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
@@ -116,6 +132,7 @@
             <aside id="sidebar-wrapper">
                 <div class="sidebar-brand">
                     <a href="{% url 'index' %}">闽宸建筑</a>
+                    <a href="#" data-toggle="sidebar" style="display: none;" class="close-nav"><i class="ion ion-close-circled"></i></a>
                 </div>
                 <div class="sidebar-user">
                     <div class="sidebar-user-picture">
@@ -131,13 +148,13 @@
                 {#                左边栏目#}
                 <ul class="sidebar-menu">
                     <li class="menu-header">Dashboard</li>
-                    <li >
+                    <li>
                         <a href="{% url 'index' %}"><i class="ion ion-speedometer"></i><span>任务概览</span></a>
                     </li>
                     <li class="menu-header">Components</li>
-                    <li >
+                    <li>
                         <a href="#" class="has-dropdown"><i
-                                class="ion ion-ios-albums-outline"></i><span>我的任务</span></a>
+                                class="ion ion-ios-book-outline"></i><span>我的任务</span></a>
                         <ul class="menu-dropdown">
                             <li><a href="{% url 'my_all_task' %}"><i class="ion ion-ios-circle-outline"></i> 全部任务</a>
                             </li>
@@ -198,7 +215,7 @@
         </div>
         <footer class="main-footer">
             <div class="footer-left">
-                Copyright &copy; 2019
+                Copyright &copy; 2020
                 <div class="bullet"></div>
                 More Information <a href="#" target="_blank" title="闽宸建筑">闽宸建筑</a>
             </div>
@@ -408,6 +425,9 @@
         });
         return false;
     });
+    if ($("body").width() < 500) {
+        $(".close-nav").eq(0).show().css("margin-left", "50px").siblings("a").css("margin-left", "50px");
+    }
 </script>
 </body>
 </html>

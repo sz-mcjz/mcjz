@@ -1,4 +1,5 @@
-from django.http import HttpResponse
+from django.db import connection
+from django.http import HttpResponse, JsonResponse
 import datetime
 
 from django.shortcuts import render_to_response
@@ -518,22 +519,223 @@ def analysis(request):
     telephone = request.COOKIES.get('uuid')
     user = Staff.objects.get(telephone=telephone)
     users = Staff.objects.all()
+
+    cursor = connection.cursor()
+    cursor.execute('SELECT task_originator,COUNT(*) FROM mcjz_task GROUP BY task_originator')  # 所有我发布的
+
+    row = cursor.fetchall()
+    cursor.execute('SELECT task_recipient,COUNT(*) FROM mcjz_task GROUP BY task_recipient')  # 所有我要做的
+
+    row1 = cursor.fetchall()
+    cursor.execute(
+        'SELECT task_originator,COUNT(*) FROM mcjz_task a inner join mcjz_task_check b on a.id = b.task_name_id  WHERE is_complete=1 GROUP BY task_originator ')  # 所有我发布已经完成的
+    row2 = cursor.fetchall()
+
+    cursor.execute(
+        'SELECT task_recipient,COUNT(*) FROM mcjz_task a inner join mcjz_task_check b on a.id = b.task_name_id  WHERE is_complete=1 GROUP BY task_recipient ')  # 所有我办的已经完成的
+    row3 = cursor.fetchall()
+
+    cursor.execute(
+        "select task_originator,count(task_originator) from mcjz_task where mcjz_task.id not in (select task_name_id from mcjz_task_check where is_complete = '1') group by task_originator")
+    row4 = cursor.fetchall()
+
+    cursor.execute(
+        "select task_recipient,count(task_recipient) from mcjz_task where mcjz_task.id not in (select task_name_id from mcjz_task_check where is_complete = '1') group by task_recipient")
+    row5 = cursor.fetchall()
+
+    cursor.execute(
+        'SELECT task_originator,COUNT(*) FROM mcjz_task  WHERE task_end_time=(select curdate()) GROUP BY task_originator')  # 我发布的今天预期
+    row6 = cursor.fetchall()
+
+    cursor.execute(
+        'SELECT task_recipient,COUNT(*) FROM mcjz_task  WHERE task_end_time=(select curdate()) GROUP BY task_recipient')  # 我要做的今天预期
+    row7 = cursor.fetchall()
+
+    cursor.execute(
+        "select task_originator,count(task_originator) from mcjz_task where task_end_time < DATE_FORMAT(now(),'%Y-%m-%d') and id not in (select task_name_id from mcjz_task_check,mcjz_task where task_name_id = mcjz_task.id and mcjz_task_check.is_complete = '1' and mcjz_task_check.timer <= mcjz_task.task_end_time) group by task_originator")
+    # 我发布的今天预期
+    row8 = cursor.fetchall()
+
+    cursor.execute(
+        "select task_recipient,count(task_recipient) from mcjz_task where task_end_time < DATE_FORMAT(now(),'%Y-%m-%d') and id not in (select task_name_id from mcjz_task_check,mcjz_task where task_name_id = mcjz_task.id and mcjz_task_check.is_complete = '1' and mcjz_task_check.timer <= mcjz_task.task_end_time) group by task_recipient")
+    row9 = cursor.fetchall()
+
+    max_number = 0
+    user_list = []
+    for user in users:
+        user_list.append(user.username)
+
+    row_list = [row, row2, row4, row6, row8]
+    all_list = []
+
+    for u in user_list:
+        name_list = []
+        i = 1
+        for row in row_list:
+            for r in row:
+                if u == r[0]:
+                    name_list.append(r[1])
+                    if r[1] > max_number:
+                        max_number = r[1]
+            if len(name_list) != i:
+                name_list.append(0)
+            i += 1
+        all_list.append(name_list)
+
+    row_list = [row1, row3, row5, row7, row9]
+    all_list2 = []
+    max_number2 = max_number
+    for u in user_list:
+        name_list = []
+        i = 1
+        for row in row_list:
+            for r in row:
+                if u == r[0]:
+                    name_list.append(r[1])
+                    if r[1] > max_number2:
+                        max_number2 = r[1]
+
+            if len(name_list) != i:
+                name_list.append(0)
+            i += 1
+        all_list2.append(name_list)
+
+    print(max_number2)
+    user1 = []
+    i = 0
+    for user in users:
+        user.numb = all_list[i]
+        user.numb1 = all_list2[i]
+        user1.append(user)
+        i += 1
+
     data = {
         'username': user.username,
         'icon': user.icon,
         'department': user.department.name,
-        'users': users,
+        'users': user1,
+        'max': max_number2,
     }
     return render_to_response('analysis.html', context=data)
+
+
+def sort(ret, user, sortby):
+    # 把 总经理 和 副经理 单独掉出来排1和2，自身排3
+    lis = list(ret)  # [('石龙进', 4), ('阳瑞', 16), ('陈林', 1)]
+    usernames = list(Staff.objects.all().values("username"))
+    count = []
+    for i in lis:
+        if ((list(i))[0]) == user.username:
+            count.append(list(i))
+            lis.remove(i)
+        elif ((list(i))[0]) == "总经理":
+            count.append(list(i))
+            lis.remove(i)
+        elif ((list(i))[0]) == "副总":
+            count.append(list(i))
+            lis.remove(i)
+    lis2 = [list(i) for i in lis]
+    count = count + lis2  # 两个列表相连
+    temp = list(zip(*count[::-1]))
+    result = [list(t) for t in temp]  # [['陈林', '阳瑞', '石龙进'], [1, 16, 4]]
+    # 为  0  用户的追加
+    for username in usernames:
+        if username["username"] not in result[0]:
+            result[0].insert(0, username["username"])
+            result[1].insert(0, 0)
+
+    if sortby != None and sortby != "":  # 用于排序的代码
+        dic = []
+        for num in range(len(result[0])):
+            dic.append({"name": result[0][num], "value": result[1][num]})
+        new_dic = []
+        if sortby == "count":
+            new_dic = sorted(dic, key=lambda x: x["value"])  # 按照数量排序  在此处倒序在前端就是正序
+        elif sortby == "name":
+            dic = [{"name": i["name"].encode("GBK"), "value": i["value"]} for i in dic]
+            new_dic = sorted(dic, reverse=True, key=lambda x: x["name"])  # 按照名字排序  在此处倒序在前端就是正序
+            new_dic = [{"name": i["name"].decode("GBK"), "value": i["value"]} for i in new_dic]
+
+        new_list = [[], []]
+        for d in new_dic:
+            new_list[0].append(d["name"])
+            new_list[1].append(d["value"])
+        result = new_list
+    return result
 
 
 def analysis2(request):
     telephone = request.COOKIES.get('uuid')
     user = Staff.objects.get(telephone=telephone)
-    print('*' * 100)
-    data = {
-        'username': user.username,
-        'icon': user.icon,
-        'department': user.department.name,
-    }
-    return render_to_response('analysis2.html', context=data)
+    # 所有员工
+    staffs = Staff.objects.all()
+    # 查询已发布 按用户名分组 统计个数，
+    if request.method == "GET":
+        data = {
+            'username': user.username,
+            'icon': user.icon,
+            'department': user.department.name,
+        }
+        return render_to_response('analysis2.html', context=data)
+
+    elif request.method == 'POST':
+        sortby = request.POST.get("sortby")
+        cursor = connection.cursor()
+        cursor.execute(
+            'select task_originator,COUNT(task_originator) task_count from mcjz_task GROUP BY task_originator')
+        ret = cursor.fetchall()
+        release_count = sort(ret, user, sortby)  # 参数为查询集和当前用户
+        # print("已发布任务统计",release_count )
+
+        # 已完成
+        # 查询 已完成的统计
+        cursor.execute(
+            "select username,count(task_recipient_id) from mcjz_staff,mcjz_task_check where mcjz_staff.id = mcjz_task_check.task_recipient_id GROUP BY task_recipient_id")
+        ret = cursor.fetchall()
+        finish_count = sort(ret, user, sortby)
+        # print("已完成任务统计", finish_count)
+
+        # 待办
+        cursor.execute(
+            "select task_recipient,count(task_recipient) from mcjz_task where mcjz_task.id not in (select task_name_id from mcjz_task_check where is_complete = '1') group by task_recipient")
+        ret = cursor.fetchall()
+        wait_count = sort(ret, user, sortby)
+        # print("待办任务统计", wait_count)
+
+        # 发布逾期 你发布的，别人逾期的   数据库now()只取年月日：DATE_FORMAT(now(),'%Y-%m-%d')
+        # select task_name_id from mcjz_task_check,mcjz_task where task_name_id = mcjz_task.id and mcjz_task_check.is_complete = '1' and mcjz_task_check.timer <= mcjz_task.task_end_time
+        cursor.execute(
+            "select task_originator,count(task_originator) from mcjz_task where task_end_time < DATE_FORMAT(now(),'%Y-%m-%d') and id not in (select task_name_id from mcjz_task_check,mcjz_task where task_name_id = mcjz_task.id and mcjz_task_check.is_complete = '1' and mcjz_task_check.timer <= mcjz_task.task_end_time) group by task_originator")
+        ret = cursor.fetchall()
+        release_overdue_count = sort(ret, user, sortby)
+        # print("发布逾期任务统计", release_overdue_count)
+
+        # 待办逾期 别人发给我的任务，我逾期的
+        cursor.execute(
+            "select task_recipient,count(task_recipient) from mcjz_task where task_end_time < DATE_FORMAT(now(),'%Y-%m-%d') and id not in (select task_name_id from mcjz_task_check,mcjz_task where task_name_id = mcjz_task.id and mcjz_task_check.is_complete = '1' and mcjz_task_check.timer <= mcjz_task.task_end_time) group by task_recipient")
+        ret = cursor.fetchall()
+        f_overdue_count = sort(ret, user, sortby)
+        # print("待办逾期任务统计", f_overdue_count)
+
+        # 逾期   所有人逾期任务天数
+        cursor.execute(
+            "select task_recipient,sum(datediff(now(),task_end_time)) num from mcjz_task where task_end_time < DATE_FORMAT(now(),'%Y-%m-%d') and id not in (select task_name_id from mcjz_task_check,mcjz_task where task_name_id = mcjz_task.id and mcjz_task_check.is_complete = '1' and mcjz_task_check.timer <= mcjz_task.task_end_time) group by task_recipient")
+        ret = cursor.fetchall()
+        day_overdue_count = sort(ret, user, sortby)
+        day_overdue_count[1] = [int(i) for i in day_overdue_count[1]]
+        # print("逾期总天数统计", day_overdue_count)
+        cursor.close()  # 查询完成后关闭游标
+        lis = ['已发布('+str(sum(release_count[1]))+")", '已完成('+str(sum(finish_count[1]))+")",
+               '待办('+str(sum(wait_count[1]))+")", '发布逾期('+str(sum(release_overdue_count[1]))+")",
+               '待办逾期('+str(sum(f_overdue_count[1]))+")", '总逾期天数('+str(sum(day_overdue_count[1]))+")"]
+        # 数据列表
+        data_list = []
+        data_list.append(release_count)
+        data_list.append(finish_count)
+        data_list.append(wait_count)
+        data_list.append(release_overdue_count)
+        data_list.append(f_overdue_count)
+        data_list.append(day_overdue_count)
+
+        return JsonResponse({"code": 200, "msg": "success", "data": {"data": data_list, "lis": lis}})
+

@@ -1,3 +1,5 @@
+import datetime
+
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render_to_response, reverse, redirect
@@ -44,6 +46,16 @@ def index(request):
                                   TaskCheck.objects.filter(task_name__in=release_my_all_tasks, is_complete=1)]
         release_my_all_tasks = [task for task in
                                 Task.objects.filter(~Q(id__in=release_completed_task), task_originator=user.username)]
+        # 今日到期
+        now = datetime.datetime.now().date()  # 2020-01-02  查询今天到期的
+        all_task = Task.objects.filter(task_end_time=now, task_recipient=user.username)
+        # 逾期任务
+        overtime_task = Task.objects.filter(task_end_time__lt=now, task_recipient=user.username)
+        overtime_tasks = []
+        for task in overtime_task:
+            # 逾期时间为当前时间减去计划完成时间的天数
+            task.yuqi_time = (now - task.task_end_time).days
+            overtime_tasks.append(task)
         data = {
             'username': user.username,
             'icon': user.icon,
@@ -51,8 +63,10 @@ def index(request):
             'telephone': user.telephone,
             'levels': [level for level in TaskLevel.objects.all()],
             'users': staff,
-            'tasks': my_all_tasks,
+            'tasks': [task for task in all_task],
+            'my_tasks':my_all_tasks,
             'releases': release_my_all_tasks,
+            'overtime_tasks': overtime_tasks,
             'to_examines': [examine for examine in
                             TaskModify.objects.filter(task_name__task_originator=user.username, is_agree=0)],
             'submit_examines': [examine for examine in

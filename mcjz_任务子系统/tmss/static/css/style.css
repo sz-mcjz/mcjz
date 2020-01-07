@@ -540,6 +540,8 @@ body.sidebar-gone .main-content {
 	font-family: 'Montserrat';
 	padding: 20px 30px 20px 280px;
 	font-size: 10px;
+	display: flex;
+	width: 100%;
 	font-weight: 600;
 	text-transform: uppercase;
 	letter-spacing: 1px;
