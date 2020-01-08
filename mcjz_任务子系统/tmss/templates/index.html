@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block main_content %}
     <div class="row">
-        <div class="col-lg-9 col-md-9 col-sm-12 disp-hidden">
+        <div class="col-lg-9 col-md-9 col-sm-12">
             <div>
                 <span style="font-size: 1.5em"><b>今日到期</b></span>
                 <div style="margin-top: -10px">
@@ -39,11 +39,48 @@
                 </table>
             </div>
 
+            <div>
+                <span style="font-size: 1.5em"><b>我的任务</b></span>
+                <div style="margin-top: -10px">
+                    <hr>
+                </div>
+                <table class="table tab-css tab-hover">
+                    <tr>
+                        <th style="width: 5%">任务等级</th>
+                        <th style="width: 20%">任务内容</th>
+                        <th style="width: 5%">开始时间</th>
+                        <th style="width: 6%">计划完成时间</th>
+                        <th style="width: 10%">备注</th>
+                        <th style="width: 5%">操作</th>
+                    </tr>
+                    {% if not my_tasks %}
+                        <tr>
+                            <td colspan="7">暂无内容</td>
+                        </tr>
+                    {% endif %}
+                    {% for foo in my_tasks %}
+                        <tr style="text-align: center">
+                            <td>{{ foo.task_level.name }}</td>
+                            <td>{{ foo.task_name }}</td>
+                            <td>{{ foo.task_start_time }}</td>
+                            <td>{{ foo.task_end_time }}</td>
+                            <td>{{ foo.mark }}</td>
+                            <td><a href="javascript:;" value="{{ foo.id }}" class="mr-1 delay"
+                                   data-toggle="modal"
+                                   data-target="#delayseeUserInfo">延期</a>/<a href="javascript:;"
+                                                                             class="submit_task"
+                                                                             value="{{ foo.id }}">提交</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
             <span style="font-size: 1.5em"><b>逾期任务</b></span>
             <div style="margin-top: -10px">
                 <hr>
             </div>
-            <table class="table tab-css tab-hover" id="fabu" style="text-align: center">
+            <table class="table tab-css tab-hover" style="text-align: center">
                 <tr>
                     <th style="width: 5%">任务等级</th>
                     <th style="width: 20%">任务内容</th>
@@ -70,9 +107,6 @@
                                data-target="#delayseeUserInfo">延期</a>/<a href="javascript:;"
                                                                          class="submit_task"
                                                                          value="{{ foo.id }}">提交</a>
-                            {#                            <a href="javascript:;" class="mr-1" data-toggle="modal"#}
-                            {#                               data-target="#seeUserInfo" value="{{ foo.id }}">修改</a>/#}
-                            {#                            <a href="javascript:;" class="del" value="{{ foo.id }}">删除</a>#}
                         </td>
                     </tr>
                 {% endfor %}
@@ -82,7 +116,7 @@
             <div style="margin-top: -10px">
                 <hr>
             </div>
-            <table class="table tab-css tab-hover" id="fabu">
+            <table class="table tab-css tab-hover">
                 <tr>
                     <th style="width: 5%">任务等级</th>
                     <th style="width: 20%">任务内容</th>
@@ -111,7 +145,7 @@
             <div style="margin-top: -10px">
                 <hr>
             </div>
-            <table class="table tab-css tab-hover" id="fabu">
+            <table class="table tab-css tab-hover">
                 <tr>
                     <th style="width: 5%">任务等级</th>
                     <th style="width: 20%">任务内容</th>
@@ -155,21 +189,23 @@
                             <label style="font-size: medium;padding-top: 10px;color: #1b1e21">任务优先级</label>
                             <select class="form-control" name="level" id="id_select2_1"
                                     style="width: 100%">
-                                <option value="">任务优先级</option>
+                                <option value="error">任务优先级</option>
                                 {% if levels %}{% for level in levels %}
                                     <option value="{{ level.name }}">{{ level.name }}</option>
                                 {% endfor %}{% endif %}
                             </select>
+                            <div class="error"></div>
                             <script>var selectorx = $('#id_select2_1').select2();</script>
                             <label style="font-size: medium;padding-top: 10px;color: #1b1e21">待办责任人</label>
                             <select class="form-control" name="recipient" id="id_select2_demo4"
                                     style="width: 100%">
-                                <option value="">选择同事</option>
+                                <option value="error">选择同事</option>
                                 {% if users %}{% for user in users %}
                                     <option value="{{ user.username }}">{{ user.username }}</option>
                                 {% endfor %}{% endif %}
 
                             </select>
+                            <div class="error"></div>
                             <script>var selectorx = $('#id_select2_demo4').select2();</script>
                             <div class="invalid-feedback">
                                 请填入待办责任人
@@ -299,6 +335,13 @@
     </div>
 
     <script>
+
+        var time = new Date();
+        var day = ('0' + time.getDate()).slice(-2);
+        var month = ('0' + (time.getMonth() + 1)).slice(-2);
+        var today = time.getFullYear() + '-' + month + '-' + day;
+        $('input[name="start_time"],input[name="end_time"]').val(today);
+
         var orig = window.location.origin;
         // 删除我发布的任务
         $(".del").click(function () {
@@ -377,7 +420,15 @@
         $("#faburenwu").click(function () {
             let content = $("textarea[name='content']").val();
             let level = $("select[name='level']").val();
+            if (level == "error") {
+                $(".error").eq(0).html("请选择任务优先级").css("color", "red");
+                return false;
+            }
             let recipient = $("select[name='recipient']").val();
+            if (recipient == "error") {
+                $(".error").eq(1).html("请选择代办责任人").css("color", "red");
+                return false;
+            }
             let start_time = $("input[name='start_time']").val();
             let end_time = $("input[name='end_time']").val();
             let mark = $("input[name='mark']").val();

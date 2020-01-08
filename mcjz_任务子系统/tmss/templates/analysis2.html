@@ -48,7 +48,6 @@
     var send = function (param) {
         $.post(orig + "/task/analysis2/", param, function (result) {
             data_list = result.data.data;
-            console.log(result.data["lis"]);
             //  发布的  完成的  待办的  我发布延期的  我办延期的  预期的
             var lis = result.data.lis;
             var dom = document.getElementsByClassName("container");

@@ -1,0 +1,170 @@
+<body style="height: 100%; margin: 0">
+<style>
+    .container {
+        height: 300px;
+        min-width: 250px;
+        max-width: 100%;
+        float: left;
+    }
+
+    .sort {
+        width: 100px;
+        height: 40px;
+        padding: 0;
+    }
+</style>
+<div style="width:100%;margin-bottom: 10px">
+    <select id="sortby" name="sortby" class="selectpicker show-tick form-control"
+            style="width: 150px;display: inline-block" data-live-search="false">
+        <option value="">默认排序</option>
+        <option value="count">按数量排序</option>
+        <option value="name">按名字排序</option>
+    </select>
+    输入天数：
+    <input type="text" id="daynum" value="0" class="form-control" data-toggle="tooltip" data-placement="bottom"
+           style="width: 50px;display: inline-block" title="今天起往前多少天的记录"
+           oninput="value=value.replace(/[^\d]/g,'')">
+    <button type="button" class="btn btn-primary" id="submitany3" title="今天起往前多少天的记录">
+        查询
+    </button>
+</div>
+<div class="container"></div>
+<div class="container"></div>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat/dist/ecStat.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/dataTool.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/china.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/world.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/bmap.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    });
+    $("#submitany3").click(function () {
+        let sortby = $("#sortby").val();
+        let daynum = $("#daynum").val();
+        send({"sortby": sortby, "daynum": daynum})
+    });
+
+    var send = function (param) {
+        $.post(orig + "/task/analysis3/", param, function (result) {
+            var data_list = result.data.data;
+            var dom = document.getElementsByClassName("container");
+            if (data_list == "未查到信息") {
+                dom[0].innerHTML = data_list;
+                return false;
+            }
+            var lis = result.data.lis;
+            if ($("body").width() > 500) {
+                let dom = document.getElementsByClassName("container");
+                for (let i = 0; i < dom.length; i++) {
+                    let myChart = echarts.init(dom[i]);
+                    option = {
+
+                        title: {
+                            text: lis[i]
+                        },
+                        tooltip: {},
+                        legend: {
+                            data: ['']
+                        },
+                        xAxis: {
+                            data: data_list[i][0],  //名字列表
+                            axisLabel: {
+                                interval: 0,
+                                rotate: -30,
+                            },
+                        },
+                        yAxis: {},
+                        series: [{
+                            name: lis[i],
+                            type: 'bar',
+                            data: data_list[i][1],
+                            itemStyle: {        //上方显示数值
+                                normal: {
+                                    label: {
+                                        show: true, //开启显示
+                                        position: 'top', //在上方显示
+                                        textStyle: { //数值样式
+                                            color: 'black',
+                                            fontSize: 10
+                                        }
+                                    }
+                                }
+                            }
+                        }]
+                    };
+                    myChart.setOption(option);
+                }
+            } else {
+                $(".container").height("900px");
+                var dom = document.getElementsByClassName("container");
+                for (let i = 0; i < dom.length; i++) {
+                    let myChart = echarts.init(dom[i]);
+                    myChart = echarts.init(dom[i]);
+                    option = null;
+                    option = {
+                        title: {
+                            text: lis[i],  //标题区域
+                            subtext: ''
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'shadow'
+                            }
+                        },
+                        legend: {
+                            data: ['', '']
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis: {
+                            type: 'value',
+                            boundaryGap: [0, 0.01],
+
+                        },
+                        yAxis: {
+                            type: 'category',
+                            data: data_list[i][0],  // 名字列表区域
+                        },
+                        series: [
+                            {
+                                name: '详情',
+                                type: 'bar',
+                                data: data_list[i][1], // 数据区域
+                                itemStyle: {        //上方显示数值
+                                    normal: {
+                                        label: {
+                                            show: true, //开启显示
+                                            position: 'right', //在上方显示
+                                            textStyle: { //数值样式
+                                                color: 'black',
+                                                fontSize: 10
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+                        ]
+                    };
+
+                    if (option && typeof option === "object") {
+                        myChart.setOption(option, true);
+                    }
+                }
+            }
+
+
+        });
+    };
+    send({"sortby": "", "daynum": 0})
+
+</script>
+</body>

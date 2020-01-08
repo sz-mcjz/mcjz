@@ -683,22 +683,32 @@ def analysis2(request):
         cursor = connection.cursor()
         cursor.execute(
             'select task_originator,COUNT(task_originator) task_count from mcjz_task GROUP BY task_originator')
-        ret = cursor.fetchall()
+        ret = None
+        try:
+            ret = cursor.fetchall()
+        except:
+            return JsonResponse({"code": 500, "msg": "error", "data": {"data": None}})
         release_count = sort(ret, user, sortby)  # 参数为查询集和当前用户
         # print("已发布任务统计",release_count )
 
         # 已完成
         # 查询 已完成的统计
         cursor.execute(
-            "select username,count(task_recipient_id) from mcjz_staff,mcjz_task_check where mcjz_staff.id = mcjz_task_check.task_recipient_id GROUP BY task_recipient_id")
-        ret = cursor.fetchall()
+            "select username,count(task_recipient_id) from mcjz_staff,mcjz_task_check where mcjz_staff.id = mcjz_task_check.task_recipient_id and mcjz_task_check.is_complete='1' GROUP BY task_recipient_id")
+        try:
+            ret = cursor.fetchall()
+        except:
+            return JsonResponse({"code": 500, "msg": "error", "data": {"data": None}})
         finish_count = sort(ret, user, sortby)
         # print("已完成任务统计", finish_count)
 
         # 待办
         cursor.execute(
             "select task_recipient,count(task_recipient) from mcjz_task where mcjz_task.id not in (select task_name_id from mcjz_task_check where is_complete = '1') group by task_recipient")
-        ret = cursor.fetchall()
+        try:
+            ret = cursor.fetchall()
+        except:
+            return JsonResponse({"code": 500, "msg": "error", "data": {"data": None}})
         wait_count = sort(ret, user, sortby)
         # print("待办任务统计", wait_count)
 
@@ -706,28 +716,37 @@ def analysis2(request):
         # select task_name_id from mcjz_task_check,mcjz_task where task_name_id = mcjz_task.id and mcjz_task_check.is_complete = '1' and mcjz_task_check.timer <= mcjz_task.task_end_time
         cursor.execute(
             "select task_originator,count(task_originator) from mcjz_task where task_end_time < DATE_FORMAT(now(),'%Y-%m-%d') and id not in (select task_name_id from mcjz_task_check,mcjz_task where task_name_id = mcjz_task.id and mcjz_task_check.is_complete = '1' and mcjz_task_check.timer <= mcjz_task.task_end_time) group by task_originator")
-        ret = cursor.fetchall()
+        try:
+            ret = cursor.fetchall()
+        except:
+            return JsonResponse({"code": 500, "msg": "error", "data": {"data": None}})
         release_overdue_count = sort(ret, user, sortby)
         # print("发布逾期任务统计", release_overdue_count)
 
         # 待办逾期 别人发给我的任务，我逾期的
         cursor.execute(
             "select task_recipient,count(task_recipient) from mcjz_task where task_end_time < DATE_FORMAT(now(),'%Y-%m-%d') and id not in (select task_name_id from mcjz_task_check,mcjz_task where task_name_id = mcjz_task.id and mcjz_task_check.is_complete = '1' and mcjz_task_check.timer <= mcjz_task.task_end_time) group by task_recipient")
-        ret = cursor.fetchall()
+        try:
+            ret = cursor.fetchall()
+        except:
+            return JsonResponse({"code": 500, "msg": "error", "data": {"data": None}})
         f_overdue_count = sort(ret, user, sortby)
         # print("待办逾期任务统计", f_overdue_count)
 
         # 逾期   所有人逾期任务天数
         cursor.execute(
             "select task_recipient,sum(datediff(now(),task_end_time)) num from mcjz_task where task_end_time < DATE_FORMAT(now(),'%Y-%m-%d') and id not in (select task_name_id from mcjz_task_check,mcjz_task where task_name_id = mcjz_task.id and mcjz_task_check.is_complete = '1' and mcjz_task_check.timer <= mcjz_task.task_end_time) group by task_recipient")
-        ret = cursor.fetchall()
+        try:
+            ret = cursor.fetchall()
+        except:
+            return JsonResponse({"code": 500, "msg": "error", "data": {"data": None}})
         day_overdue_count = sort(ret, user, sortby)
         day_overdue_count[1] = [int(i) for i in day_overdue_count[1]]
         # print("逾期总天数统计", day_overdue_count)
         cursor.close()  # 查询完成后关闭游标
-        lis = ['已发布('+str(sum(release_count[1]))+")", '已完成('+str(sum(finish_count[1]))+")",
-               '待办('+str(sum(wait_count[1]))+")", '发布逾期('+str(sum(release_overdue_count[1]))+")",
-               '待办逾期('+str(sum(f_overdue_count[1]))+")", '总逾期天数('+str(sum(day_overdue_count[1]))+")"]
+        lis = ['已发布(' + str(sum(release_count[1])) + ")", '已完成(' + str(sum(finish_count[1])) + ")",
+               '待办(' + str(sum(wait_count[1])) + ")", '发布逾期(' + str(sum(release_overdue_count[1])) + ")",
+               '待办逾期(' + str(sum(f_overdue_count[1])) + ")", '总逾期天数(' + str(sum(day_overdue_count[1])) + ")"]
         # 数据列表
         data_list = []
         data_list.append(release_count)
@@ -739,3 +758,54 @@ def analysis2(request):
 
         return JsonResponse({"code": 200, "msg": "success", "data": {"data": data_list, "lis": lis}})
 
+
+def analysis3(request):
+    telephone = request.COOKIES.get('uuid')
+    user = Staff.objects.get(telephone=telephone)
+    # 查询已发布 按用户名分组 统计个数，
+    cursor = connection.cursor()
+    if request.method == "GET":
+        # 默认为 查询今天的
+        data = {
+            'username': user.username,
+            'icon': user.icon,
+            'department': user.department.name,
+        }
+        return render_to_response('analysis3.html', context=data)
+
+    elif request.method == 'POST':
+        sortby = request.POST.get("sortby")
+        daynum = request.POST.get("daynum")
+        if not daynum or daynum == "":
+            daynum = "0"
+        #       0 是今天 1两天内 2三天内 3四天内 4五天内 5六天内 6七天内
+        # -- 查询所有人 n 天内发布的
+        # -- select task_originator,count(task_originator) from mcjz_task where DATE_FORMAT(release_time,'%Y-%m-%d') between DATE_FORMAT(DATE_SUB(now(), INTERVAL 6 DAY),'%Y-%m-%d') and DATE_FORMAT(now(),'%Y-%m-%d') group by task_originator
+        cursor.execute(
+            "select task_originator,count(task_originator) from mcjz_task where DATE_FORMAT(release_time,'%Y-%m-%d') between DATE_FORMAT(DATE_SUB(now(), INTERVAL " + daynum + " DAY),'%Y-%m-%d') and DATE_FORMAT(now(),'%Y-%m-%d') group by task_originator")
+        ret = None
+        sen_count = None
+        try:
+            ret = cursor.fetchall()
+            sen_count = sort(ret, user, sortby)  # 参数为查询集和当前用户
+        except:
+            return JsonResponse({"code": 500, "msg": "error", "data": {"data": "未查到信息"}})
+
+        # -- 查询所有人 n 天内完成的
+        # -- select task_recipient,count(task_recipient) from mcjz_task,mcjz_task_check where  mcjz_task.id=mcjz_task_check.task_name_id and is_complete='1' and DATE_FORMAT(mcjz_task_check.timer,'%Y-%m-%d') between DATE_FORMAT(DATE_SUB(now(), INTERVAL 6 DAY),'%Y-%m-%d') and DATE_FORMAT(now(),'%Y-%m-%d') group by task_recipient
+        cursor.execute(
+            "select task_recipient,count(task_recipient) from mcjz_task,mcjz_task_check where  mcjz_task.id=mcjz_task_check.task_name_id and is_complete='1' and DATE_FORMAT(mcjz_task_check.timer,'%Y-%m-%d') between DATE_FORMAT(DATE_SUB(now(), INTERVAL " + daynum + " DAY),'%Y-%m-%d') and DATE_FORMAT(now(),'%Y-%m-%d') group by task_recipient")
+        fin_count = None
+        try:
+            ret = cursor.fetchall()
+            fin_count = sort(ret, user, sortby)  # 参数为查询集和当前用户
+        except:
+            return JsonResponse({"code": 500, "msg": "error", "data": {"data": "未查到信息"}})
+        data_list = []
+        data_list.append(sen_count)
+        data_list.append(fin_count)
+        return JsonResponse(
+            {"code": 200, "msg": "success",
+             "data": {"data": data_list,
+                      "lis": ["已发布统计(" + str(sum(sen_count[1])) + ")", "已完成统计(" + str(sum(fin_count[1])) + ")"], "sortby": sortby,
+                      "daynum": daynum}})

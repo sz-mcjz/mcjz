@@ -205,6 +205,8 @@
                             </li>
                             <li><a href="{% url 'analysis2' %}"><i class="ion ion-ios-circle-outline"></i>综合统计</a>
                             </li>
+                            <li><a href="{% url 'analysis3' %}"><i class="ion ion-ios-circle-outline"></i>按天统计</a>
+                            </li>
                         </ul>
                     </li>
                 </ul>
@@ -309,21 +311,6 @@
 <script src="{% static 'js/custom.js' %}"></script>
 {#<script src="{% static 'js/demo.js' %}"></script>#}
 <script type="text/javascript">
-    var ddd = new Date();
-    var day = ddd.getDate();
-    var month = ddd.getMonth();
-    if (ddd.getMonth() < 10) {
-        month = "0" + (ddd.getMonth() + 1);
-    }
-    if (ddd.getDate() < 10) {
-        day = "0" + ddd.getDate();
-    }
-    var datew = ddd.getFullYear() + "-" + (month + 1) + "-" + day;
-    var datew = datew.toString();
-
-    $(".bt").val(datew);
-
-
     $('.row .table td div').each(function () {
         if ($(this).height() <= 60) {
             $(this).siblings('a').hide();
@@ -343,12 +330,6 @@
             $(this).siblings('div').css('height', '60px');
 
         }
-    });
-    $(".row .table tr").each(function () {
-        var time1 = $(this).children("td").eq(3).html() + "";
-        var time2 = $(this).children("td").eq(4).html() + "";
-        $(this).children("td").eq(3).html(time1.replace(/年|月|日/g, "/").substring(0, time1.length - 1));
-        $(this).children("td").eq(4).html(time2.replace(/年|月|日/g, "/").substring(0, time2.length - 1));
     });
 </script>
 <script type="text/javascript">
@@ -390,11 +371,9 @@
 
         $(".menu-dropdown li").removeClass("active");
         $(this).parent("li").addClass("active");
-        console.log($(this).attr("href"));
         var loca = $(this).attr("href");
         //console.log(window.location.origin)
         var href = orig + loca;
-        console.log(href);
         if (loca == "/index/") {
             window.location.href = href;
             window.location.replace(orig + "/index/");

@@ -38,7 +38,7 @@ def index(request):
         staff.remove(Staff.objects.get(telephone=uuid))
         # 我的任务
         completed_task = [complete_task.task_name_id for complete_task in
-                          TaskCheck.objects.filter(task_recipient=user, is_complete=1)]
+                          TaskCheck.objects.filter(task_recipient=user)]
         my_all_tasks = [task for task in Task.objects.filter(~Q(id__in=completed_task), task_recipient=user.username)]
         # 我的发布
         release_my_all_tasks = [task for task in Task.objects.filter(task_originator=user.username)]
@@ -48,10 +48,12 @@ def index(request):
                                 Task.objects.filter(~Q(id__in=release_completed_task), task_originator=user.username)]
         # 今日到期
         now = datetime.datetime.now().date()  # 2020-01-02  查询今天到期的
-        all_task = Task.objects.filter(task_end_time=now, task_recipient=user.username)
+        ids = TaskCheck.objects.filter(task_recipient=user,is_complete=1).values_list("task_name_id")# 已经提交的id集合
+        all_task = Task.objects.filter(~Q(id__in=ids),task_end_time=now, task_recipient=user.username)
         # 逾期任务
-        overtime_task = Task.objects.filter(task_end_time__lt=now, task_recipient=user.username)
+        overtime_task = Task.objects.filter(~Q(id__in=ids),task_end_time__lt=now, task_recipient=user.username)
         overtime_tasks = []
+        print("overtime_tasks--------------",overtime_tasks)
         for task in overtime_task:
             # 逾期时间为当前时间减去计划完成时间的天数
             task.yuqi_time = (now - task.task_end_time).days

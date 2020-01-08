@@ -66,7 +66,7 @@ WSGI_APPLICATION = 'tmss.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mcjz',
+        'NAME': 'mcjz_test',
         'USER': 'root',
         'PASSWORD': 'Ryan-97920.',
         'HOST': '120.77.83.157',

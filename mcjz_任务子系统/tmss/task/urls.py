@@ -38,4 +38,5 @@ urlpatterns = [
     # 统计分析
     path('analysis/', api.analysis, name='analysis'),
     path('analysis2/', api.analysis2, name='analysis2'),
+    path('analysis3/', api.analysis3, name='analysis3'),
 ]
