@@ -1,18 +1,18 @@
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render_to_response, redirect
+from django.urls import reverse
 from django.utils.deprecation import MiddlewareMixin
 
+ALLOW_URL = ['*']
 
-class MyMiddleAware2(MiddlewareMixin):
-    # 如果验证成功，则什么一个不用做，否则返回HttpResponse即可响应请求(中断)
-    def process_request(self, request):  # 强制登录判断
-        if "/login/" not in request.path:  # 路径中如果没有"login"
-            # print("登录验证")
-            # print(request)
-            uuid = request.COOKIES.get('uuid', None)  # 获取session
-            if uuid is None:  # 判断是否有登录的标记
-                # print("未登录")
-                return redirect(reverse('login'))  # 未登录则，跳转登录页面
+
+class UserLoginMiddleAware(MiddlewareMixin):
+    def process_request(self, request):
+        if "/login/" not in request.path:
+            uuid = request.COOKIES.get('uuid', None)
+            sessionid = request.session.session_key
+            if uuid is None:
+                return redirect(reverse('login'))
             else:
-                pass  # print('已登入')
+                pass
         else:
-            pass  # print("正在登录")  # 如果路径中"login"则是登录动作本身
+            pass

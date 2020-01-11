@@ -1,0 +1,8 @@
+<uwsgi>    
+<socket>127.0.0.1:8001</socket><!-- 内部端口，自定义 --> 
+<chdir>/data/wwwroot/tmss/</chdir><!-- 项目路径 -->            
+<module>tmss.wsgi</module> 
+<processes>4</processes> <!-- 进程数 -->     
+<daemonize>uwsgi_tmss.log</daemonize><!-- 日志文件 -->
+</uwsgi>
+

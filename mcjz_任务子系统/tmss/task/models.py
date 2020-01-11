@@ -10,6 +10,13 @@ class TaskLevel(models.Model):
         db_table = 'mcjz_task_level'
 
 
+class TaskQuality(models.Model):
+    score = models.CharField(max_length=125)
+
+    class Meta:
+        db_table = 'mcjz_task_quality'
+
+
 class Task(models.Model):
     task_originator = models.CharField(max_length=125)  # 任务发起人
     task_recipient = models.CharField(max_length=125)  # 待办责任人
@@ -19,6 +26,7 @@ class Task(models.Model):
     task_start_time = models.DateField()  # 任务开始时间
     task_end_time = models.DateField()  # 计划完成时间
     mark = models.TextField()
+    score = models.ForeignKey('TaskQuality', on_delete=models.DO_NOTHING, default=9)
 
     class Meta:
         db_table = 'mcjz_task'

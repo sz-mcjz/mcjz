@@ -8,8 +8,8 @@
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no"
           name="viewport">
-    <title>Examples &rsaquo; Login &mdash; Stisla</title>
-
+    <title>深圳市闽宸建筑工程有限公司</title>
+    <link rel="icon" href="{% static 'images/icon.ico' %}" type="image/x-icon"/>
     <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'ionicons/css/ionicons.min.css' %}">
     <link rel="stylesheet" href="{% static 'fontawesome/web-fonts-with-css/css/fontawesome-all.min.css' %}">
@@ -35,7 +35,8 @@
                             <form method="POST" action="" class="needs-validation" novalidate="">
                                 <div class="form-group">
                                     <label for="email">用户名</label>
-                                    <input placeholder="手机号" id="email" type="text" class="form-control" name="username" tabindex="1"
+                                    <input placeholder="手机号" id="email" type="text" class="form-control" name="username"
+                                           tabindex="1"
                                            required autofocus>
                                     <div class="invalid-feedback">
                                         请输入用户名
@@ -44,11 +45,11 @@
 
                                 <div class="form-group">
                                     <label for="password" class="d-block">密码
-                                        <div class="float-right">
-                                            <a href="#">
-                                                忘记密码
-                                            </a>
-                                        </div>
+                                        {#                                        <div class="float-right">#}
+                                        {#                                            <a href="#">#}
+                                        {#                                                忘记密码#}
+                                        {#                                            </a>#}
+                                        {#                                        </div>#}
                                     </label>
                                     <input id="password" type="password" class="form-control" name="password"
                                            tabindex="2" required>
@@ -56,7 +57,7 @@
                                         请输入密码
                                     </div>
                                     {% if msg %}
-                                    <div style="color: red;" id="tishi">{{ msg }}</div>
+                                        <div style="color: red;" id="tishi">{{ msg }}</div>
                                     {% endif %}
                                 </div>
 
@@ -77,7 +78,7 @@
                         </div>
                     </div>
                     <div class="simple-footer">
-                        Copyright &copy; mcjz 2019
+                        Copyright &copy; mcjz 2020
                     </div>
                 </div>
             </div>
@@ -87,14 +88,14 @@
 
 <script>
 
-$("#password").focus(function () {
-    $("#tishi").hide()
-});
+    $("#password").focus(function () {
+        $("#tishi").hide()
+    });
 
 
-$("#email").mouseover(function () {
-    $("#tishi").hide()
-})
+    $("#email").mouseover(function () {
+        $("#tishi").hide()
+    })
 </script>
 
 <script src="{% static 'js/jquery.min.js' %}"></script>

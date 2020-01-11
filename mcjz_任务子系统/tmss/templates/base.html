@@ -5,9 +5,10 @@
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no"
           name="viewport">
-    <title>闽宸建筑有限公司</title>
-
+    <title>深圳市闽宸建筑工程有限公司</title>
+    <link rel="icon" href="{% static 'images/icon.ico' %}" type="image/x-icon"/>
     <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    {% block _css %}{% endblock %}
     <link rel="stylesheet" href="{% static 'ionicons/css/ionicons.min.css' %}">
     <link rel="stylesheet" href="{% static 'fontawesome/web-fonts-with-css/css/fontawesome-all.min.css' %}">
 
@@ -91,27 +92,9 @@
                 </div>
             </form>
             <ul class="navbar-nav navbar-right">
-                {#                <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"#}
-                {#                                                             class="nav-link notification-toggle nav-link-lg beep"><i#}
-                {#                        class="ion ion-ios-bell-outline"></i></a>#}
-                {#                    <div class="dropdown-menu dropdown-list dropdown-menu-right">#}
-                {#                        <div class="dropdown-header">注意事项#}
-                {#                            <div class="float-right">#}
-                {#                                <a href="#">查看所有</a>#}
-                {#                            </div>#}
-                {#                        </div>#}
-                {#                        <div class="dropdown-list-content">#}
-                {#                            <a href="#" class="dropdown-item dropdown-item-unread">#}
-                {#                                <img alt="image" src="{{ icon }}"#}
-                {#                                     class="rounded-circle dropdown-item-img">#}
-                {#                                <div class="dropdown-item-desc">#}
-                {#                                    <b>{{ username }}</b>已经 <b>xxxxx</b> to <b>Done</b>#}
-                {#                                    <div class="time">10 Hours Ago</div>#}
-                {#                                </div>#}
-                {#                            </a>#}
-                {#                        </div>#}
-                {#                    </div>#}
-                {#                </li>#}
+                {#                                <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"#}
+                {#                                                                             class="nav-link notification-toggle nav-link-lg beep"></a>#}
+                {#                                </li>#}
                 <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg">
                     <i class="ion ion-android-person d-lg-none"></i>
                     <div class="d-sm-none d-lg-inline-block">Hi, <b>{{ username }}</b></div>
@@ -132,7 +115,8 @@
             <aside id="sidebar-wrapper">
                 <div class="sidebar-brand">
                     <a href="{% url 'index' %}">闽宸建筑</a>
-                    <a href="#" data-toggle="sidebar" style="display: none;" class="close-nav"><i class="ion ion-close-circled"></i></a>
+                    <a href="#" data-toggle="sidebar" style="display: none;" class="close-nav"><i
+                            class="ion ion-close-circled"></i></a>
                 </div>
                 <div class="sidebar-user">
                     <div class="sidebar-user-picture">
@@ -149,7 +133,13 @@
                 <ul class="sidebar-menu">
                     <li class="menu-header">Dashboard</li>
                     <li>
-                        <a href="{% url 'index' %}"><i class="ion ion-speedometer"></i><span>任务概览</span></a>
+                        <a href="{% url 'index' %}">
+                            <i class="ion ion-speedometer"></i>
+                            <span>任务概览</span>
+                            {% block notice %}
+
+                            {% endblock %}
+                        </a>
                     </li>
                     <li class="menu-header">Components</li>
                     <li>
@@ -206,6 +196,8 @@
                             <li><a href="{% url 'analysis2' %}"><i class="ion ion-ios-circle-outline"></i>综合统计</a>
                             </li>
                             <li><a href="{% url 'analysis3' %}"><i class="ion ion-ios-circle-outline"></i>按天统计</a>
+                            </li>
+                            <li><a href="{% url 'structure' %}"><i class="ion ion-ios-circle-outline"></i>组织架构</a>
                             </li>
                         </ul>
                     </li>
@@ -368,7 +360,7 @@
         });
     });
     $(".menu-dropdown li a").click(function () {
-
+        $('html').animate({scrollTop: '0px'}, 0);
         $(".menu-dropdown li").removeClass("active");
         $(this).parent("li").addClass("active");
         var loca = $(this).attr("href");
@@ -382,6 +374,7 @@
                 $(".main-content").eq(0).html(result);
             });
         }
+
         return false;
     });
     $("#changeUserInfo").click(function () {

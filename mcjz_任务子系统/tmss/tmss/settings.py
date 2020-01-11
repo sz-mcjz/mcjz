@@ -8,6 +8,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '!1853l64j*rlt=+^!&4)4wx)^qg36_7_(hzi$s&ztm%le)uu)f'
+# SECRET_KEY = '!1853l64j*rlt=+^!&4)4wx)^qg36_7_(hzi$s&ztm%le)uu)f'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,7 +38,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'user.middleware.MyMiddleAware2',
+    'user.middleware.UserLoginMiddleAware',
 ]
 
 ROOT_URLCONF = 'tmss.urls'
@@ -121,3 +122,20 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
 # 允许所有的请求头
 CORS_ALLOW_HEADERS = ('*')
+# redis在django中的配置
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "CONNECTION_POOL_KWARGS": {"max_connections": 100}
+        }
+    }
+}
+# session的存储配置
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'default'
+
+# 设置session失效时间,单位为秒
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 14

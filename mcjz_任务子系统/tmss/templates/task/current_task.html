@@ -27,11 +27,11 @@
                 {#内容#}
                 <td style="width: 6%">{{ task.task_level.name }}</td>
                 {#等级#}
-                <td style="width: 11%">{{ task.release_time }}</td>
+                <td style="width: 11%">{{ task.release_time|date:"Y-m-d" }}</td>
                 {#发布时间#}
-                <td style="width: 9%">{{ task.task_start_time }}</td>
+                <td style="width: 9%">{{ task.task_start_time|date:"Y-m-d" }}</td>
                 {#任务开始时间#}
-                <td style="width: 9%; color: red">{{ task.task_end_time }}</td>
+                <td style="width: 9%; color: red">{{ task.task_end_time|date:"Y-m-d" }}</td>
                 {#计划完成时间#}
                 <td style="width: 10%">{{ task.mark }}</td>
                 {#备注#}

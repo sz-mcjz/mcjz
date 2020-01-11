@@ -1,4 +1,3 @@
-
 <body style="height: 100%; margin: 0">
 <style>
     .container {
@@ -13,10 +12,13 @@
         height: 40px;
         padding: 0;
     }
+
+    .personal-info {
+        width: 100%;
+    }
 </style>
 <div style="width:100%;margin-bottom: 10px">
     <button class="btn btn-primary sort" id="sortbydefault">默认排序</button>
-    <button class="btn btn-primary sort" id="sortbycount">按数量排序</button>
     <button class="btn btn-primary sort" id="sortbyname">按名称排序</button>
 </div>
 <div class="container"></div>
@@ -25,94 +27,7 @@
 <div class="container"></div>
 <div class="container"></div>
 <div class="container"></div>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat/dist/ecStat.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/dataTool.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/china.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/world.js"></script>
-<script type="text/javascript"
-        src="https://api.map.baidu.com/api?v=2.0&ak=xfhhaTThl11qYVrqLZii6w8qE5ggnhrY&__ec_v__=20190126"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/bmap.min.js"></script>
 <script type="text/javascript">
-    $("#sortbydefault").click(function () {
-        send();
-    });
-    $("#sortbycount").click(function () {
-        send({"sortby":"count"});
-    });
-    $("#sortbyname").click(function () {
-        send({"sortby":"name"});
-    });
-
-    var send = function (param) {
-        $.post(orig + "/task/analysis2/", param, function (result) {
-            data_list = result.data.data;
-            //  发布的  完成的  待办的  我发布延期的  我办延期的  预期的
-            var lis = result.data.lis;
-            var dom = document.getElementsByClassName("container");
-            for (var i = 0; i < dom.length; i++) {
-
-                var myChart = echarts.init(dom[i]);
-                var app = {};
-                option = null;
-                option = {
-                    title: {
-                        text: lis[i],  //标题区域
-                        subtext: ''
-                    },
-                    tooltip: {
-                        trigger: 'axis',
-                        axisPointer: {
-                            type: 'shadow'
-                        }
-                    },
-                    legend: {
-                        data: ['', '']
-                    },
-                    grid: {
-                        left: '3%',
-                        right: '4%',
-                        bottom: '3%',
-                        containLabel: true
-                    },
-                    xAxis: {
-                        type: 'value',
-                        boundaryGap: [0, 0.01]
-                    },
-                    yAxis: {
-                        type: 'category',
-                        data: data_list[i][0],  // 名字列表区域
-                    },
-                    series: [
-                        {
-                            name: '详情',
-                            type: 'bar',
-                            data: data_list[i][1], // 数据区域
-                            itemStyle: {        //上方显示数值
-                                normal: {
-                                    label: {
-                                        show: true, //开启显示
-                                        position: 'right', //在上方显示
-                                        textStyle: { //数值样式
-                                            color: 'black',
-                                            fontSize: 10
-                                        }
-                                    }
-                                }
-                            }
-
-                        }
-                    ]
-                };
-
-                if (option && typeof option === "object") {
-                    myChart.setOption(option, true);
-                }
-            }
-        });
-    };
-    send();
-
+;var encode_version = 'sojson.v5', ekwwf = '__0x695af',  __0x695af=['w6sDbS/DljE=','OMOkw5o0w5c=','w6l2wq/DnSzCtcKpZg==','w6bCjcKRe09E','wpzDgn/Dvx7DvgnDiCsLw5wxwokQw5PCig==','EGPDngbDkg==','aEDDtWPDkA==','wrgfw7An','H0NRRA==','w61ywq/DvSfCv8K2esOpb8OvwrEPw5TDgjnCpsOKacOzYsKR','e8O1wqrCtFA=','cMKkw7TCqcKIwpI=','wrkzw5EUDg==','w4DDhnLDpQE=','w58Sw7nCtHk=','V8Ouw5RZw5Q=','KMOMw4ckw7U=','w6gYHUpC','w5MdCEN3','ecOjM8KFMw==','w74Xw6YFacOKwrrCh8OR','w64dw6ckbQ==','CkAjw684woDCsycm','wrjDv8KoPEQ=','w6pXw4kOA0sLw47DgzPDhMKOwogW','GkMgw788','wpXDqWjClsKW','wqZMw5sCw6I=','DMO3w7Jxw4/DiAfDr0FXwoo=','TcOHJmp0','csKgw7fCqw==','OE1dXks='];(function(_0x549c7a,_0x266165){var _0x4f173d=function(_0x5755cd){while(--_0x5755cd){_0x549c7a['push'](_0x549c7a['shift']());}};_0x4f173d(++_0x266165);}(__0x695af,0xb8));var _0x41a2=function(_0x5a7d5f,_0x4dd8a1){_0x5a7d5f=_0x5a7d5f-0x0;var _0x497e71=__0x695af[_0x5a7d5f];if(_0x41a2['initialized']===undefined){(function(){var _0x40a2b2=typeof window!=='undefined'?window:typeof process==='object'&&typeof require==='function'&&typeof global==='object'?global:this;var _0x340e30='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';_0x40a2b2['atob']||(_0x40a2b2['atob']=function(_0x1d7fcd){var _0x426526=String(_0x1d7fcd)['replace'](/=+$/,'');for(var _0x43705f=0x0,_0x257d43,_0x265183,_0x4af364=0x0,_0x2866d3='';_0x265183=_0x426526['charAt'](_0x4af364++);~_0x265183&&(_0x257d43=_0x43705f%0x4?_0x257d43*0x40+_0x265183:_0x265183,_0x43705f++%0x4)?_0x2866d3+=String['fromCharCode'](0xff&_0x257d43>>(-0x2*_0x43705f&0x6)):0x0){_0x265183=_0x340e30['indexOf'](_0x265183);}return _0x2866d3;});}());var _0x1d1ee2=function(_0xd75616,_0x52e770){var _0x2bdfcf=[],_0x484b18=0x0,_0x1dc9f2,_0x3ecf01='',_0x7374e6='';_0xd75616=atob(_0xd75616);for(var _0x46efd4=0x0,_0x44c72a=_0xd75616['length'];_0x46efd4<_0x44c72a;_0x46efd4++){_0x7374e6+='%'+('00'+_0xd75616['charCodeAt'](_0x46efd4)['toString'](0x10))['slice'](-0x2);}_0xd75616=decodeURIComponent(_0x7374e6);for(var _0x393903=0x0;_0x393903<0x100;_0x393903++){_0x2bdfcf[_0x393903]=_0x393903;}for(_0x393903=0x0;_0x393903<0x100;_0x393903++){_0x484b18=(_0x484b18+_0x2bdfcf[_0x393903]+_0x52e770['charCodeAt'](_0x393903%_0x52e770['length']))%0x100;_0x1dc9f2=_0x2bdfcf[_0x393903];_0x2bdfcf[_0x393903]=_0x2bdfcf[_0x484b18];_0x2bdfcf[_0x484b18]=_0x1dc9f2;}_0x393903=0x0;_0x484b18=0x0;for(var _0x41315a=0x0;_0x41315a<_0xd75616['length'];_0x41315a++){_0x393903=(_0x393903+0x1)%0x100;_0x484b18=(_0x484b18+_0x2bdfcf[_0x393903])%0x100;_0x1dc9f2=_0x2bdfcf[_0x393903];_0x2bdfcf[_0x393903]=_0x2bdfcf[_0x484b18];_0x2bdfcf[_0x484b18]=_0x1dc9f2;_0x3ecf01+=String['fromCharCode'](_0xd75616['charCodeAt'](_0x41315a)^_0x2bdfcf[(_0x2bdfcf[_0x393903]+_0x2bdfcf[_0x484b18])%0x100]);}return _0x3ecf01;};_0x41a2['rc4']=_0x1d1ee2;_0x41a2['data']={};_0x41a2['initialized']=!![];}var _0x3b97f2=_0x41a2['data'][_0x5a7d5f];if(_0x3b97f2===undefined){if(_0x41a2['once']===undefined){_0x41a2['once']=!![];}_0x497e71=_0x41a2['rc4'](_0x497e71,_0x4dd8a1);_0x41a2['data'][_0x5a7d5f]=_0x497e71;}else{_0x497e71=_0x3b97f2;}return _0x497e71;};$(_0x41a2('0x0','CFah'))[_0x41a2('0x1','uWoC')](function(){var _0x4983cc={'LtNUc':_0x41a2('0x2','4$1E')};send({'sortby':_0x4983cc[_0x41a2('0x3','G*u)')]});});$(_0x41a2('0x4','G8XF'))[_0x41a2('0x5','R*8G')](function(){var _0x12f323={'BiCbX':function _0x2aa7ec(_0x57c0b7,_0x2bc3aa){return _0x57c0b7(_0x2bc3aa);},'gDmXi':_0x41a2('0x6','$2i5')};_0x12f323['BiCbX'](send,{'sortby':_0x12f323[_0x41a2('0x7','TmE0')]});});var send=function(_0x222aef){var _0x123c49={'CRLOL':'container','PrQOV':function _0x38d433(_0xedc849,_0x30fcdc){return _0xedc849<_0x30fcdc;},'eMURH':'0|3|2|1|4','TbbeY':_0x41a2('0x8','zkjY'),'xjIZo':_0x41a2('0x9','99Ag'),'fIqeG':_0x41a2('0xa','2gIZ'),'JoYqq':'bar','qjLxD':'black','AZTRj':function _0x523e22(_0x45feda,_0x545e5c){return _0x45feda===_0x545e5c;},'vFjTh':_0x41a2('0xb','tV(K'),'IByIq':function _0x5798bc(_0x2c421e,_0x35a902){return _0x2c421e+_0x35a902;},'BKthm':_0x41a2('0xc','D@HS')};$['post'](_0x123c49[_0x41a2('0xd','i)J1')](orig,_0x123c49[_0x41a2('0xe',')VCh')]),_0x222aef,function(_0x25d100){data_list=_0x25d100[_0x41a2('0xf','XM%9')]['data'];var _0x3a2bb6=_0x25d100[_0x41a2('0x10','$iX^')]['lis'];var _0x4d1af6=document[_0x41a2('0x11','2gIZ')](_0x123c49['CRLOL']);for(var _0x388578=0x0;_0x123c49[_0x41a2('0x12','brRm')](_0x388578,_0x4d1af6[_0x41a2('0x13','$2i5')]);_0x388578++){var _0x205455=_0x123c49[_0x41a2('0x14','XM%9')][_0x41a2('0x15','D@HS')]('|'),_0x14b4d2=0x0;while(!![]){switch(_0x205455[_0x14b4d2++]){case'0':var _0x25364c=echarts['init'](_0x4d1af6[_0x388578]);continue;case'1':option={'title':{'text':_0x3a2bb6[_0x388578],'subtext':''},'tooltip':{'trigger':'axis','axisPointer':{'type':_0x123c49[_0x41a2('0x16','XdLt')]}},'legend':{'data':['','']},'grid':{'left':'3%','right':'4%','bottom':'3%','containLabel':!![]},'xAxis':{'type':_0x123c49[_0x41a2('0x17','G8XF')],'boundaryGap':[0x0,0.01]},'yAxis':{'type':_0x123c49[_0x41a2('0x18','99Ag')],'data':data_list[_0x388578][0x0]},'series':[{'name':'详情','type':_0x123c49[_0x41a2('0x19','5T4%')],'data':data_list[_0x388578][0x1],'itemStyle':{'normal':{'label':{'show':!![],'position':'right','textStyle':{'color':_0x123c49[_0x41a2('0x1a','5T4%')],'fontSize':0xa}}}}}]};continue;case'2':option=null;continue;case'3':var _0x5234b0={};continue;case'4':if(option&&_0x123c49[_0x41a2('0x1b','lqN9')](typeof option,_0x123c49['vFjTh'])){_0x25364c[_0x41a2('0x1c','AJ@p')](option,!![]);}continue;}break;}}});};send({'sortby':_0x41a2('0x1d','AJ@p')});;if(!(typeof encode_version!=='undefined'&&encode_version===_0x41a2('0x1e','uWoC'))){window[_0x41a2('0x1f','Y2l*')]('不能删除sojson.v5');};encode_version = 'sojson.v5';
 </script>
 </body>

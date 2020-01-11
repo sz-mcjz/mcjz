@@ -35,8 +35,12 @@ urlpatterns = [
     path('my/receive/task/submit/', api.task_to_submit, name='submit_task'),
     # 任务通过审核
     path('my/examine/submit/task/', api.examine_submit_task, name='examine_submit_task'),
-    # 统计分析
+    # 个人统计
     path('analysis/', api.analysis, name='analysis'),
+    # 综合统计
     path('analysis2/', api.analysis2, name='analysis2'),
+    # 按天统计
     path('analysis3/', api.analysis3, name='analysis3'),
+    # 组织架构
+    path('structure/', api.structure, name='structure'),
 ]

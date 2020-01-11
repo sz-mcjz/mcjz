@@ -19,27 +19,27 @@
             {% for task in tasks %}
                 {% if task.yuqi > 0 %}
                 <tr>
-                    <td style="width: 4%">{{ task.id }}</td>
+                    <td style="vertical-align:middle; text-align:center; width: 3%">{{ task.id }}</td>
                     {#编号#}
-                    <td style="width: 6%">{{ task.task_originator }}</td>
+                    <td style="vertical-align:middle; text-align:center; width: 6%">{{ task.task_originator }}</td>
                     {#发起人#}
-                    <td style="width: 6%">{{ task.task_recipient }}</td>
+                    <td style="vertical-align:middle; text-align:center; width: 6%">{{ task.task_recipient }}</td>
                     {#责任人#}
-                    <td style="width: 26%">{{ task.task_name }}</td>
+                    <td style="vertical-align:middle; text-align:center; width: 20%">{{ task.task_name }}</td>
                     {#内容#}
-                    <td style="width: 6%">{{ task.task_level.name }}</td>
+                    <td style="vertical-align:middle; text-align:center; width: 5%">{{ task.task_level.name }}</td>
                     {#等级#}
-                    <td style="width: 11%">{{ task.release_time }}</td>
+                    <td style="vertical-align:middle; text-align:center; width: 6%">{{ task.release_time|date:"Y-m-d" }}</td>
                     {#发布时间#}
-                    <td style="width: 9%">{{ task.task_start_time }}</td>
+                    <td style="vertical-align:middle; text-align:center; width: 6%">{{ task.task_start_time|date:"Y-m-d" }}</td>
                     {#任务开始时间#}
-                    <td style="width: 9%">{{ task.task_end_time }}</td>
+                    <td style="vertical-align:middle; text-align:center; width: 6%">{{ task.task_end_time|date:"Y-m-d" }}</td>
                     {#计划完成时间#}
-                    <td style="width: 10%">{{ task.mark }}</td>
+                    <td style="vertical-align:middle; text-align:center; width: 10%">{{ task.mark }}</td>
                     {#备注#}
-                    <td style="width: 7%">{{ task.virtual_end_time }}</td>
+                    <td style="vertical-align:middle; text-align:center; width: 6%">{{ task.virtual_end_time|date:"Y-m-d" }}</td>
                     {# 实际完成时间#}
-                    <td style="width: 5%">{{ task.yuqi }}</td>
+                    <td style="vertical-align:middle; text-align:center; width: 5%">{{ task.yuqi }}</td>
                     {#逾期天数#}
                 </tr>
                 {% endif %}

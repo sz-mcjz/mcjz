@@ -1,9 +1,9 @@
 <body style="height: 100%; margin: 0">
 <style>
     .container {
-        height: 300px;
+        height: 900px;
         min-width: 250px;
-        max-width: 100%;
+        max-width: 16%;
         float: left;
     }
 
@@ -14,157 +14,17 @@
     }
 </style>
 <div style="width:100%;margin-bottom: 10px">
-    <select id="sortby" name="sortby" class="selectpicker show-tick form-control"
-            style="width: 150px;display: inline-block" data-live-search="false">
-        <option value="">默认排序</option>
-        <option value="count">按数量排序</option>
-        <option value="name">按名字排序</option>
-    </select>
-    输入天数：
-    <input type="text" id="daynum" value="0" class="form-control" data-toggle="tooltip" data-placement="bottom"
-           style="width: 50px;display: inline-block" title="今天起往前多少天的记录"
-           oninput="value=value.replace(/[^\d]/g,'')">
-    <button type="button" class="btn btn-primary" id="submitany3" title="今天起往前多少天的记录">
-        查询
-    </button>
+    <button class="btn btn-primary sort" id="sortbydefault">默认排序</button>
+    <button class="btn btn-primary sort" id="sortbyname">按名称排序</button>
 </div>
 <div class="container"></div>
 <div class="container"></div>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat/dist/ecStat.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/dataTool.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/china.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/world.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/bmap.min.js"></script>
+<div class="container"></div>
+<div class="container"></div>
+<div class="container"></div>
+<div class="container"></div>
 <script type="text/javascript">
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-    });
-    $("#submitany3").click(function () {
-        let sortby = $("#sortby").val();
-        let daynum = $("#daynum").val();
-        send({"sortby": sortby, "daynum": daynum})
-    });
-
-    var send = function (param) {
-        $.post(orig + "/task/analysis3/", param, function (result) {
-            var data_list = result.data.data;
-            var dom = document.getElementsByClassName("container");
-            if (data_list == "未查到信息") {
-                dom[0].innerHTML = data_list;
-                return false;
-            }
-            var lis = result.data.lis;
-            if ($("body").width() > 500) {
-                let dom = document.getElementsByClassName("container");
-                for (let i = 0; i < dom.length; i++) {
-                    let myChart = echarts.init(dom[i]);
-                    option = {
-
-                        title: {
-                            text: lis[i]
-                        },
-                        tooltip: {},
-                        legend: {
-                            data: ['']
-                        },
-                        xAxis: {
-                            data: data_list[i][0],  //名字列表
-                            axisLabel: {
-                                interval: 0,
-                                rotate: -30,
-                            },
-                        },
-                        yAxis: {},
-                        series: [{
-                            name: lis[i],
-                            type: 'bar',
-                            data: data_list[i][1],
-                            itemStyle: {        //上方显示数值
-                                normal: {
-                                    label: {
-                                        show: true, //开启显示
-                                        position: 'top', //在上方显示
-                                        textStyle: { //数值样式
-                                            color: 'black',
-                                            fontSize: 10
-                                        }
-                                    }
-                                }
-                            }
-                        }]
-                    };
-                    myChart.setOption(option);
-                }
-            } else {
-                $(".container").height("900px");
-                var dom = document.getElementsByClassName("container");
-                for (let i = 0; i < dom.length; i++) {
-                    let myChart = echarts.init(dom[i]);
-                    myChart = echarts.init(dom[i]);
-                    option = null;
-                    option = {
-                        title: {
-                            text: lis[i],  //标题区域
-                            subtext: ''
-                        },
-                        tooltip: {
-                            trigger: 'axis',
-                            axisPointer: {
-                                type: 'shadow'
-                            }
-                        },
-                        legend: {
-                            data: ['', '']
-                        },
-                        grid: {
-                            left: '3%',
-                            right: '4%',
-                            bottom: '3%',
-                            containLabel: true
-                        },
-                        xAxis: {
-                            type: 'value',
-                            boundaryGap: [0, 0.01],
-
-                        },
-                        yAxis: {
-                            type: 'category',
-                            data: data_list[i][0],  // 名字列表区域
-                        },
-                        series: [
-                            {
-                                name: '详情',
-                                type: 'bar',
-                                data: data_list[i][1], // 数据区域
-                                itemStyle: {        //上方显示数值
-                                    normal: {
-                                        label: {
-                                            show: true, //开启显示
-                                            position: 'right', //在上方显示
-                                            textStyle: { //数值样式
-                                                color: 'black',
-                                                fontSize: 10
-                                            }
-                                        }
-                                    }
-                                }
-
-                            }
-                        ]
-                    };
-
-                    if (option && typeof option === "object") {
-                        myChart.setOption(option, true);
-                    }
-                }
-            }
-
-
-        });
-    };
-    send({"sortby": "", "daynum": 0})
-
+;var encode_version = 'sojson.v5', syplp = '__0x693d2',  __0x693d2=['wqXCjMOKMkZk','w5XDgMKaScKA','wqhrIQ==','HMO/wqjDs8OP','ZxrDkVM=','wozDlcKXT8KOwrXChU1vCsOTMMOIfG9G','OkvCgsOJ','wpM+w6g=','GBA5wqTDq3R9E2DCsHvClVvDnmplw4vDscKfwqRaGA==','SsKQw6jCscOJGUAhw4I=','wpcWEmjDrMKL','dVrCg2I=','wooMw48C','cwfDrV3Cuw==','M8OtH8OwDw==','XlkcwpFn','wqTDlsOqwqzCiQ==','NA8Xw6/CoFg=','wogWCEDDqMKXwq3CnD4=','NMKew5XDuFM=','wqXCi8OBJUZ9LlNU','5LiT6ICa5Yi06ZilM1jCk8KRWcOsPcKONA==','TcK0C8OpwrfDlMOmcsOdcXXDh8OjGA==','dBrDl0nCvw==','M8KDwrrDqzE=','QMOnJsOqGsOSVU0fWcOj','Uk8rwoM=','ESBfwowJ','AsOsIMOr'];(function(_0x20f01f,_0xc9cf92){var _0x2fc759=function(_0x17674d){while(--_0x17674d){_0x20f01f['push'](_0x20f01f['shift']());}};_0x2fc759(++_0xc9cf92);}(__0x693d2,0x1c9));var _0xb367=function(_0x5da62d,_0x3f25bb){_0x5da62d=_0x5da62d-0x0;var _0x4579c7=__0x693d2[_0x5da62d];if(_0xb367['initialized']===undefined){(function(){var _0x234b78=typeof window!=='undefined'?window:typeof process==='object'&&typeof require==='function'&&typeof global==='object'?global:this;var _0x5e99b6='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';_0x234b78['atob']||(_0x234b78['atob']=function(_0x50377f){var _0x373235=String(_0x50377f)['replace'](/=+$/,'');for(var _0xbc36f=0x0,_0x3019a5,_0x28280e,_0x4f2382=0x0,_0x1e3773='';_0x28280e=_0x373235['charAt'](_0x4f2382++);~_0x28280e&&(_0x3019a5=_0xbc36f%0x4?_0x3019a5*0x40+_0x28280e:_0x28280e,_0xbc36f++%0x4)?_0x1e3773+=String['fromCharCode'](0xff&_0x3019a5>>(-0x2*_0xbc36f&0x6)):0x0){_0x28280e=_0x5e99b6['indexOf'](_0x28280e);}return _0x1e3773;});}());var _0x13ce86=function(_0x48b3f5,_0x41b9bc){var _0x50fde0=[],_0x4d4481=0x0,_0x4d1e01,_0x186f6f='',_0x3c138a='';_0x48b3f5=atob(_0x48b3f5);for(var _0x74385d=0x0,_0x39f88e=_0x48b3f5['length'];_0x74385d<_0x39f88e;_0x74385d++){_0x3c138a+='%'+('00'+_0x48b3f5['charCodeAt'](_0x74385d)['toString'](0x10))['slice'](-0x2);}_0x48b3f5=decodeURIComponent(_0x3c138a);for(var _0x1ab403=0x0;_0x1ab403<0x100;_0x1ab403++){_0x50fde0[_0x1ab403]=_0x1ab403;}for(_0x1ab403=0x0;_0x1ab403<0x100;_0x1ab403++){_0x4d4481=(_0x4d4481+_0x50fde0[_0x1ab403]+_0x41b9bc['charCodeAt'](_0x1ab403%_0x41b9bc['length']))%0x100;_0x4d1e01=_0x50fde0[_0x1ab403];_0x50fde0[_0x1ab403]=_0x50fde0[_0x4d4481];_0x50fde0[_0x4d4481]=_0x4d1e01;}_0x1ab403=0x0;_0x4d4481=0x0;for(var _0x197015=0x0;_0x197015<_0x48b3f5['length'];_0x197015++){_0x1ab403=(_0x1ab403+0x1)%0x100;_0x4d4481=(_0x4d4481+_0x50fde0[_0x1ab403])%0x100;_0x4d1e01=_0x50fde0[_0x1ab403];_0x50fde0[_0x1ab403]=_0x50fde0[_0x4d4481];_0x50fde0[_0x4d4481]=_0x4d1e01;_0x186f6f+=String['fromCharCode'](_0x48b3f5['charCodeAt'](_0x197015)^_0x50fde0[(_0x50fde0[_0x1ab403]+_0x50fde0[_0x4d4481])%0x100]);}return _0x186f6f;};_0xb367['rc4']=_0x13ce86;_0xb367['data']={};_0xb367['initialized']=!![];}var _0x2c1457=_0xb367['data'][_0x5da62d];if(_0x2c1457===undefined){if(_0xb367['once']===undefined){_0xb367['once']=!![];}_0x4579c7=_0xb367['rc4'](_0x4579c7,_0x3f25bb);_0xb367['data'][_0x5da62d]=_0x4579c7;}else{_0x4579c7=_0x2c1457;}return _0x4579c7;};$(_0xb367('0x0','g]&h'))['click'](function(){var _0xdb31cb={'ePpcC':function _0x1b465a(_0x347752,_0x4c2581){return _0x347752(_0x4c2581);},'xDiVL':_0xb367('0x1','xi3u')};_0xdb31cb['ePpcC'](send,{'sortby':_0xdb31cb[_0xb367('0x2','O[71')],'daynum':0x3});});$(_0xb367('0x3','PaKT'))['click'](function(){var _0x94aa3e={'XCyiQ':_0xb367('0x4','o94W')};send({'sortby':_0x94aa3e[_0xb367('0x5','sFY@')],'daynum':0x3});});var send=function(_0x2aac3d){var _0x1aae81={'drOzp':_0xb367('0x6','PaKT'),'livIY':_0xb367('0x7','&#jy'),'PyVha':_0xb367('0x8','ldTy'),'bwZwE':'category','nmqAF':_0xb367('0x9','bpXt'),'Ftcmu':_0xb367('0xa','rmO$'),'UIvFS':function _0x343af2(_0x17aba6,_0x20ded7){return _0x17aba6===_0x20ded7;},'qSJek':function _0x55a051(_0x15e549,_0x5ccfa8){return _0x15e549+_0x5ccfa8;}};$[_0xb367('0xb','xi3u')](_0x1aae81['qSJek'](orig,_0xb367('0xc','ldTy')),_0x2aac3d,function(_0x1b7eab){var _0x4111cc=_0x1b7eab['data']['data'];var _0x46a798=_0x1b7eab[_0xb367('0xd','KX#V')][_0xb367('0xe','@8u^')];var _0xd87d9e=document[_0xb367('0xf','xqJD')](_0xb367('0x10','5y#@'));for(let _0x16a9fe=0x0;_0x16a9fe<_0xd87d9e[_0xb367('0x11','!s4j')];_0x16a9fe++){let _0x1481f0=echarts[_0xb367('0x12','FRNS')](_0xd87d9e[_0x16a9fe]);_0x1481f0=echarts[_0xb367('0x13','uqPZ')](_0xd87d9e[_0x16a9fe]);option=null;option={'title':{'text':_0x46a798[_0x16a9fe],'subtext':''},'tooltip':{'trigger':_0x1aae81[_0xb367('0x14','xi3u')],'axisPointer':{'type':_0x1aae81['livIY']}},'legend':{'data':['','']},'grid':{'left':'3%','right':'4%','bottom':'3%','containLabel':!![]},'xAxis':{'type':_0x1aae81[_0xb367('0x15','PaKT')],'boundaryGap':[0x0,0.01]},'yAxis':{'type':_0x1aae81[_0xb367('0x16','o94W')],'data':_0x4111cc[_0x16a9fe][0x0]},'series':[{'name':'详情','type':_0x1aae81['nmqAF'],'data':_0x4111cc[_0x16a9fe][0x1],'itemStyle':{'normal':{'label':{'show':!![],'position':_0xb367('0x17','16!u'),'textStyle':{'color':_0x1aae81['Ftcmu'],'fontSize':0xa}}}}}]};if(option&&_0x1aae81['UIvFS'](typeof option,_0xb367('0x18','J@EA'))){_0x1481f0[_0xb367('0x19','!s4j')](option,!![]);}}});};send({'sortby':_0xb367('0x1a','2UIM'),'daynum':0x3});if(!(typeof encode_version!=='undefined'&&encode_version===_0xb367('0x1b','&#jy'))){window['alert'](_0xb367('0x1c','oPr^'));};encode_version = 'sojson.v5';
 </script>
 </body>
+
