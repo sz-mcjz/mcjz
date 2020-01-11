@@ -11,7 +11,7 @@ SECRET_KEY = '!1853l64j*rlt=+^!&4)4wx)^qg36_7_(hzi$s&ztm%le)uu)f'
 # SECRET_KEY = '!1853l64j*rlt=+^!&4)4wx)^qg36_7_(hzi$s&ztm%le)uu)f'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -67,7 +67,7 @@ WSGI_APPLICATION = 'tmss.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mcjz_test',
+        'NAME': 'mcjz',
         'USER': 'root',
         'PASSWORD': 'Ryan-97920.',
         'HOST': '120.77.83.157',

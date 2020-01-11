@@ -216,9 +216,8 @@
                             {% for foo in scores %}
                                 <option value="{{ foo.id }}">{{ foo.score }}</option>
                             {% endfor %}
-
                             </select></td>
-                        <td style="width: 5%"><a href="javascript:;" class="examine_task" value="{{ foo.id }}">同意</a>
+                        <td style="width: 5%"><a href="javascript:;" class="examine_task" value="{{ foo.task_name.id }}">同意</a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -414,8 +413,10 @@
         $(".examine_task").click(function () {
             let score = $(this).parent("td").prev("td").children("select").val();
             // console.log($(this).attr("value"))
+
             if (!confirm('确定同意吗？')) return false;
             $(this).siblings("select").val();
+            console.log("当前传值id",$(this).attr("value"),"当前传值任务质量：",score);
             $.post(orig + "/task/my/examine/submit/task/", {"task_id": $(this).attr("value"),"score":score}, function () {
                 window.location.replace(orig + "/index/");
             })

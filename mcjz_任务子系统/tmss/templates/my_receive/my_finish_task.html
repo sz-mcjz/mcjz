@@ -6,6 +6,7 @@
         <th style="text-align:center; width: 6%">发布日期</th>
         <th style="text-align:center; width: 6%">任务开始时间</th>
         <th style="text-align:center; width: 6%">计划完成时间</th>
+        <th style="text-align:center; width: 6%">实际完成时间</th>
         <th style="text-align:center; width: 10%">备注</th>
         <th style="text-align:center; width: 5%">任务等级</th>
     </tr>
@@ -21,6 +22,7 @@
             <td style="vertical-align:middle; width: 6%">{{ task.task_recipient }}</td>
             <td style="vertical-align:middle; width: 6%">{{ task.release_time|date:"Y-m-d" }}</td>
             <td style="vertical-align:middle; width: 6%">{{ task.task_start_time|date:"Y-m-d" }}</td>
+            <td style="vertical-align:middle; width: 6%">{{ task.task_end_time|date:"Y-m-d" }}</td>
             <td style="vertical-align:middle; width: 6%">{{ task.task_end_time|date:"Y-m-d" }}</td>
             <td style="vertical-align:middle; width: 10%">{{ task.mark }}</td>
             <td style="vertical-align:middle; width: 5%">{{ task.task_level.name }}</td>

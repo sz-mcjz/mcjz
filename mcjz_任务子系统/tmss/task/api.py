@@ -663,7 +663,7 @@ def examine_submit_task(request):
     task_id = request.POST.get('task_id')
     score = request.POST.get('score')
     # 修改task_check表
-    examine_task = TaskCheck.objects.get(id=task_id)
+    examine_task = TaskCheck.objects.get(task_name_id=task_id)
     examine_task.is_complete = 1
     examine_task.save()
     # 更新task表
@@ -875,12 +875,13 @@ def analysis2(request):
 
         # 发布逾期 你发布的，别人逾期的   数据库now()只取年月日：DATE_FORMAT(now(),'%Y-%m-%d')
         # select task_name_id from mcjz_task_check,mcjz_task where task_name_id = mcjz_task.id and mcjz_task_check.is_complete = '1' and mcjz_task_check.timer <= mcjz_task.task_end_time
+        # 发布逾期改为 提前天数总计
         cursor.execute(
-            "select task_originator,count(task_originator) from mcjz_task where task_end_time < DATE_FORMAT(now(),'%Y-%m-%d') and id not in (select task_name_id from mcjz_task_check,mcjz_task where task_name_id = mcjz_task.id and mcjz_task_check.is_complete = '1' and mcjz_task_check.timer <= mcjz_task.task_end_time) group by task_originator")
-        release_overdue_count = None
+            "select task_recipient,sum(datediff(task_end_time,timer)) from (select a.*,b.task_recipient,b.task_end_time from mcjz_task_check a left join mcjz_task b on a.task_name_id = b.id where is_complete='1' and timer < task_end_time) temp group by task_recipient")
+        advance_day_count = None
         try:
             ret = cursor.fetchall()
-            release_overdue_count = sort(ret, user, sortby)
+            advance_day_count = sort(ret, user, sortby)
         except:
             return JsonResponse({"code": 500, "msg": "error", "data": {"data": None}})
 
@@ -912,18 +913,19 @@ def analysis2(request):
         # print("逾期总天数统计", day_overdue_count)
         cursor.close()  # 查询完成后关闭游标
         lis = ['已发布(' + str(sum(release_count[1])) + ")", '已完成(' + str(sum(finish_count[1])) + ")",
-               '待办(' + str(sum(wait_count[1])) + ")", '发布逾期(' + str(sum(release_overdue_count[1])) + ")",
+               '待办(' + str(sum(wait_count[1])) + ")", '提前完成总天数(' + str(sum(advance_day_count[1])) + ")",
                '待办逾期(' + str(sum(f_overdue_count[1])) + ")", '总逾期天数(' + str(sum(day_overdue_count[1])) + ")"]
         # 数据列表
         data_list = []
         data_list.append(release_count)
         data_list.append(finish_count)
         data_list.append(wait_count)
-        data_list.append(release_overdue_count)
+        data_list.append(advance_day_count)
         data_list.append(f_overdue_count)
         data_list.append(day_overdue_count)
 
         return JsonResponse({"code": 200, "msg": "success", "data": {"data": data_list, "lis": lis}})
+
 
 
 def analysis3(request):
@@ -1037,8 +1039,8 @@ def structure(request):
         return render_to_response('structure.html', context=data)
 
     elif request.method == 'POST':
-        depts = Department.objects.all()[::-1]
-        depts.remove(depts[0])
+        depts = list(Department.objects.all())[:-2]
+        # depts.remove(depts[0])
         dep_data = []
         for dep in depts:
             us = list(Staff.objects.filter(department=dep).values("username", "telephone"))

@@ -16,8 +16,10 @@ def login(request, **kwargs):
     if request.method == 'POST':
         username = request.POST.get('username', None)
         password = request.POST.get('password', None)
-        user = Staff.objects.filter(telephone=username, password=password).first()
-        if user:
+        print(username, password)
+        user = Staff.objects.filter(telephone=username).first()
+        print(user.password, user.telephone)
+        if user and user.password == password:
             request.session[user.id] = user.telephone
             resp = redirect(reverse('index'))
             resp.set_cookie('uuid', UseAes(SECRET_KEY).encrypt(user.telephone), expires=60 * 60 * 24 * 14)
@@ -83,7 +85,7 @@ def index(request):
                             TaskModify.objects.filter(task_name__task_originator=user.username, is_agree=0)],
             'submit_examines': [examine for examine in
                                 TaskCheck.objects.filter(task_name__task_originator=user.username, is_complete=0)],
-            'scores': scores[:len(scores)-1]
+            'scores': scores[:len(scores) - 1]
         }
         # print(TaskCheck.objects.filter(task_name__task_originator=user.username, is_complete=0)[0].task_name.score.score)
         return render_to_response('index.html', context=data)
@@ -118,10 +120,10 @@ def index(request):
 
 
 def profile(request):
-    uuid = UseAes(SECRET_KEY).decodebytes(UseAes(SECRET_KEY).decodebytes(request.COOKIES.get('uuid')))
+    uuid = UseAes(SECRET_KEY).decodebytes(request.COOKIES.get('uuid'))
     user = Staff.objects.get(telephone=uuid)
     if request.method == 'GET':
-        phone = UseAes(SECRET_KEY).decodebytes(UseAes(SECRET_KEY).decodebytes(request.COOKIES.get('uuid')))
+        phone = UseAes(SECRET_KEY).decodebytes(request.COOKIES.get('uuid'))
         user = Staff.objects.get(telephone=phone)
         data = {
             'icon': user.icon,
@@ -136,7 +138,7 @@ def profile(request):
         old_password = request.POST.get('old_password')
         password = request.POST.get('password')
         new_password = request.POST.get('new_password')
-        phone = UseAes(SECRET_KEY).decodebytes(UseAes(SECRET_KEY).decodebytes(request.COOKIES.get('uuid')))
+        phone = UseAes(SECRET_KEY).decodebytes(request.COOKIES.get('uuid'))
         user = Staff.objects.get(telephone=phone)
         if old_password and password and new_password:
             if user.password == old_password:
